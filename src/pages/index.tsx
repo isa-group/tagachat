@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Tag-a-chat</title>
+        <title>tag-a-chat</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
