@@ -99,6 +99,7 @@ function LoginForm() {
           <PasswordInput
             name="password"
             requiredMessage="Please enter a password"
+            autoCompleteType="current-password"
             formLabel="Password"
             register={register}
             error={errors.password}

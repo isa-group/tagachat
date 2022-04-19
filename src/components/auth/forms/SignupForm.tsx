@@ -11,7 +11,7 @@ import {
 import { getSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import LoadingSpinner from '../../common/LoadingSpinner'
 import PasswordInput from '../PasswordInput'
 
@@ -59,7 +59,11 @@ function SignupForm() {
     })
   }, [router])
 
-  const onSubmit = async ({ email, name, password }: Inputs) => {
+  const onSubmit: SubmitHandler<FieldValues> = async ({
+    email,
+    name,
+    password,
+  }) => {
     try {
       setIsLoading(true)
 
@@ -90,8 +94,14 @@ function SignupForm() {
             <Input
               type="email"
               {...register('email', {
-                required: 'Please enter a valid email address',
-                pattern: !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                required: {
+                  value: true,
+                  message: 'Please enter an email address',
+                },
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Please enter a valid email address',
+                },
               })}
             />
             {!errors.email ? (
@@ -120,9 +130,9 @@ function SignupForm() {
 
           <PasswordInput
             name="password"
-            formLabel="Password"
             requiredMessage="Please enter a password"
-            autoComplete="new-password"
+            autoCompleteType="new-password"
+            formLabel="Password"
             register={register}
             error={errors.password}
             formHelperText="At least 6 characters long"

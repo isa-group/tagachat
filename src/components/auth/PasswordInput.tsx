@@ -22,10 +22,10 @@ type PasswordInputProps = {
   requiredMessage: string
   register: UseFormRegister<FieldValues>
   error: FieldError | undefined
-  autoCompleteType?: string
+  autoCompleteType?: 'new-password' | 'current-password'
   lenghtValidation?: boolean
-  linkText: string
-  linkHref: string
+  linkText?: string
+  linkHref?: string
   formHelperText?: string
 }
 
