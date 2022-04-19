@@ -21,7 +21,7 @@ type PasswordInputProps = {
   formLabel: string
   requiredMessage: string
   register: UseFormRegister<FieldValues>
-  error: FieldError
+  error: FieldError | undefined
   autoCompleteType?: string
   lenghtValidation?: boolean
   linkText: string

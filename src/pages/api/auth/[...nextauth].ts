@@ -1,17 +1,21 @@
-import NextAuth from 'next-auth'
+import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 import clientPromise from 'src/lib/mongodb'
 import { verifyPassword } from 'src/lib/bcryptjs'
 
-export default NextAuth({
+const nextAuthOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
   providers: [
     CredentialsProvider({
       credentials: {
-        email: { label: 'Email', type: 'email' },
+        email: {
+          label: 'Email',
+          type: 'email',
+          placeholder: 'email@domain.com',
+        },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
@@ -40,4 +44,6 @@ export default NextAuth({
       },
     }),
   ],
-})
+}
+
+export default NextAuth(nextAuthOptions)

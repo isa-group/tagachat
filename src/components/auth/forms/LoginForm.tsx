@@ -9,9 +9,9 @@ import {
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 
-import { getSession, signIn } from 'next-auth/react'
+import { getSession, signIn, SignInResponse } from 'next-auth/react'
 
 import LoadingSpinner from '../../common/LoadingSpinner'
 import PasswordInput from '../PasswordInput'
@@ -24,7 +24,7 @@ function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm()
+  } = useForm<FieldValues>()
 
   useEffect(() => {
     getSession().then((session) => {
@@ -36,25 +36,22 @@ function LoginForm() {
     })
   }, [router])
 
-  const onSubmit = async ({
-    email,
-    password,
-  }: {
-    email: string
-    password: string
-  }) => {
+  const onSubmit: SubmitHandler<FieldValues> = async ({ email, password }) => {
     try {
       setIsLoading(true)
 
-      const result = await signIn('credentials', {
-        redirect: false,
-        email: email,
-        password: password,
-      })
+      const result: SignInResponse | undefined = await signIn<'credentials'>(
+        'credentials',
+        {
+          redirect: false,
+          email: email,
+          password: password,
+        }
+      )
 
-      console.log(result)
-
-      if (!result.error) {
+      if (!!result && result.error) {
+        throw new Error(result.error)
+      } else {
         toast({
           title: `Welcome to tag-a-chat!`,
           status: 'info',
@@ -63,16 +60,14 @@ function LoginForm() {
         })
 
         router.replace('/')
-      } else {
-        toast({
-          title: `${result?.error}`,
-          status: 'error',
-          duration: 6000,
-          isClosable: true,
-        })
       }
     } catch (error) {
-      console.error(error)
+      toast({
+        title: (error as Error).message,
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      })
     } finally {
       setIsLoading(false)
     }
@@ -88,8 +83,14 @@ function LoginForm() {
             <Input
               type="email"
               {...register('email', {
-                required: 'Please enter a valid email address',
-                pattern: !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                required: {
+                  value: true,
+                  message: 'Please enter an email address',
+                },
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Please enter a valid email address',
+                },
               })}
             />
             <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
