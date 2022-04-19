@@ -2,8 +2,9 @@ import { useRouter } from 'next/router'
 import { Box } from '@chakra-ui/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import { FC } from 'react'
 
-export default function Layout({ children }) {
+const Layout: FC<{}> = ({ children }) => {
   const router = useRouter()
 
   if (
@@ -23,3 +24,5 @@ export default function Layout({ children }) {
     </Box>
   )
 }
+
+export default Layout

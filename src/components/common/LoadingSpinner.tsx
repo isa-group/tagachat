@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 
-function LoadingSpinner({ loading }) {
+function LoadingSpinner({ loading }: { loading: boolean }) {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true })
 
   useEffect(() => {

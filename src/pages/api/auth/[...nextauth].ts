@@ -28,7 +28,7 @@ export default NextAuth({
         }
 
         const isValid = await verifyPassword(
-          credentials?.password,
+          credentials!.password,
           result.password
         )
 

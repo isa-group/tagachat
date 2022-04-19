@@ -7,7 +7,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  Link as ChakraLink,
   Menu,
   MenuButton,
   MenuDivider,
@@ -20,53 +19,22 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { forwardRef, useState } from 'react'
+import { FC } from 'react'
 import { signOut, useSession } from 'next-auth/react'
 import ThemeButton from '../common/ThemeButton'
 import LoadingSpinner from '../common/LoadingSpinner'
+import { ActiveThemedLink } from '../common/ActiveThemeLink'
 
-const ActiveThemedLink = forwardRef(({ children, href, ...props }, ref) => {
-  const router = useRouter()
-  const isCurrentPath = router.pathname === href
-
-  const bgColor = useColorModeValue('blue.700', 'blue.500')
-
-  return (
-    <ChakraLink
-      px="2"
-      py="2"
-      rounded="md"
-      _hover={{
-        textDecoration: 'none',
-        bg: bgColor,
-      }}
-      bg={isCurrentPath && bgColor}
-      ref={ref}
-      {...props}
-    >
-      {children}
-    </ChakraLink>
-  )
-})
-ActiveThemedLink.displayName = 'ActiveThemedLink'
-
-const NavLinks = ({ isLoggedIn }) => (
+const NavLinks = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
   <>
-    <Link href="/" passHref>
-      <ActiveThemedLink>Home Page</ActiveThemedLink>
-    </Link>
+    <ActiveThemedLink href="/">Home Page</ActiveThemedLink>
     {isLoggedIn && (
-      <>
-        <Link href="/example" passHref>
-          <ActiveThemedLink>Example page</ActiveThemedLink>
-        </Link>
-      </>
+      <ActiveThemedLink href="/example">Example page</ActiveThemedLink>
     )}
   </>
 )
 
-export default function Navbar(props) {
+const Navbar: FC = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { data: session, status } = useSession()
 
@@ -118,7 +86,9 @@ export default function Navbar(props) {
                     cursor="pointer"
                     minW={0}
                   >
-                    <Avatar size="sm" name={session.user?.name} />
+                    {session?.user?.name && (
+                      <Avatar size="sm" name={session?.user?.name} />
+                    )}
                   </MenuButton>
 
                   <MenuList
@@ -127,8 +97,12 @@ export default function Navbar(props) {
                     color={menuTextColor}
                   >
                     <VStack spacing="4" my="5">
-                      <Avatar size="xl" name={session.user?.name} />
-                      <Text>{session.user.name}</Text>
+                      {session?.user?.name && (
+                        <>
+                          <Avatar size="xl" name={session.user.name} />
+                          <Text>{session.user.name}</Text>
+                        </>
+                      )}
                     </VStack>
                     <MenuDivider />
                     <MenuItem>
@@ -164,7 +138,7 @@ export default function Navbar(props) {
         {isOpen && (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack spacing={4}>
-              <NavLinks isLoggedIn={isAuthenticated} />
+              <NavLinks isLoggedIn={!!session} />
             </Stack>
           </Box>
         )}
@@ -172,3 +146,5 @@ export default function Navbar(props) {
     </>
   )
 }
+
+export default Navbar
