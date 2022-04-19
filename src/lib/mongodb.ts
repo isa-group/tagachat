@@ -1,43 +1,35 @@
-import { Db, MongoClient } from 'mongodb'
+// This file was obtained from https://github.com/vercel/next.js/blob/canary/examples/with-mongodb/lib/mongodb.js
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017'
-const MONGODB_DBNAME = process.env.DB_NAME
+import { MongoClient } from 'mongodb'
 
-// check the MongoDB URI
-if (!MONGODB_URI) {
-  throw new Error('Define the MONGODB_URI environmental variable')
+const uri = process.env.MONGODB_URI ?? 'mongodb://localhost:27017'
+const options = {}
+
+let client
+let clientPromise: Promise<MongoClient>
+
+if (!process.env.MONGODB_URI) {
+  throw new Error('Please add your Mongo URI to .env.local')
 }
 
-// check the MongoDB DB
-if (!MONGODB_DBNAME) {
-  throw new Error('Define the MONGODB_DB environmental variable')
+declare global {
+  var _mongoClientPromise: Promise<MongoClient>
 }
 
-let cachedClient: MongoClient
-let cachedDb: Db
-
-export async function connectToDatabase() {
-  if (cachedClient && cachedDb) {
-    return {
-      client: cachedClient,
-      db: cachedDb,
-    }
+if (process.env.NODE_ENV === 'development') {
+  // In development mode, use a global variable so that the value
+  // is preserved across module reloads caused by HMR (Hot Module Replacement).
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(uri, options)
+    global._mongoClientPromise = client.connect()
   }
-
-  const client = new MongoClient(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-
-  await client.connect()
-
-  const db = client.db(MONGODB_DBNAME)
-
-  cachedClient = client
-  cachedDb = db
-
-  return {
-    client,
-    db,
-  }
+  clientPromise = global._mongoClientPromise
+} else {
+  // In production mode, it's best to not use a global variable.
+  client = new MongoClient(uri, options)
+  clientPromise = client.connect()
 }
+
+// Export a module-scoped MongoClient promise. By doing this in a
+// separate module, the client can be shared across functions.
+export default clientPromise

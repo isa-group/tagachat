@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { connectToDatabase } from 'src/lib/mongodb'
+import clientPromise from 'src/lib/mongodb'
 import { hashPassword } from 'src/lib/bcryptjs'
 
 type Data = {
@@ -24,10 +24,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     return res.status(422).json({ message: 'Invalid Data' })
   }
 
-  const { db } = await connectToDatabase()
-
+  const client = await clientPromise
+  const db = client.db()
   const usersCollection = db.collection('users')
-
   const user = await usersCollection.findOne({ email })
 
   if (user) {

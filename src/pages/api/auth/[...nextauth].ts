@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-import { connectToDatabase } from 'src/lib/mongodb'
+import clientPromise from 'src/lib/mongodb'
 import { verifyPassword } from 'src/lib/bcryptjs'
 
 export default NextAuth({
@@ -15,12 +15,12 @@ export default NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
-        const { db } = await connectToDatabase()
-
-        const usersCollection = await db.collection('users')
+        const client = await clientPromise
+        const db = client.db()
+        const usersCollection = db.collection('users')
 
         const result = await usersCollection.findOne({
-          email: credentials.email,
+          email: credentials?.email,
         })
 
         if (!result) {
@@ -28,7 +28,7 @@ export default NextAuth({
         }
 
         const isValid = await verifyPassword(
-          credentials.password,
+          credentials?.password,
           result.password
         )
 
