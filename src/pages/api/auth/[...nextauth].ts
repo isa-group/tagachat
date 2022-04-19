@@ -5,6 +5,7 @@ import clientPromise from 'src/lib/mongodb'
 import { verifyPassword } from 'src/lib/bcryptjs'
 
 const nextAuthOptions: NextAuthOptions = {
+  secret: process.env.NEXT_AUTH_SECRET,
   session: {
     strategy: 'jwt',
   },
