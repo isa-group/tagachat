@@ -33,7 +33,7 @@ async function createUser({ email, name, password }: Inputs) {
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong!')
+    throw new Error(data.message)
   }
 
   return data
@@ -78,7 +78,12 @@ function SignupForm() {
 
       router.push('/')
     } catch (error) {
-      console.error(error)
+      toast({
+        title: (error as Error).message,
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      })
     } finally {
       setIsLoading(false)
     }
