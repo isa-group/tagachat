@@ -13,9 +13,23 @@ import {
   FormHelperText,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { FieldError, FieldValues, UseFormRegister } from 'react-hook-form'
 import { HiEye, HiEyeOff } from 'react-icons/hi'
 
-function PasswordInput({
+type PasswordInputProps = {
+  name: string
+  formLabel: string
+  requiredMessage: string
+  register: UseFormRegister<FieldValues>
+  error: FieldError
+  autoCompleteType?: string
+  lenghtValidation?: boolean
+  linkText: string
+  linkHref: string
+  formHelperText?: string
+}
+
+const PasswordInput = ({
   name,
   formLabel,
   requiredMessage,
@@ -26,7 +40,7 @@ function PasswordInput({
   linkText,
   linkHref,
   formHelperText,
-}) {
+}: PasswordInputProps) => {
   const { isOpen, onToggle } = useDisclosure()
   const textColors = useColorModeValue('blue.500', 'blue.200')
 
@@ -56,7 +70,7 @@ function PasswordInput({
                   value: 6,
                   message: 'Your password should be at least 6 characters long',
                 }
-              : {},
+              : undefined,
           })}
         />
         <InputRightElement>

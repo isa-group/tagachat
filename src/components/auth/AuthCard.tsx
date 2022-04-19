@@ -1,21 +1,22 @@
-import { Box, useColorModeValue } from "@chakra-ui/react";
+import { Box, useColorModeValue } from '@chakra-ui/react'
+import { FC } from 'react'
 
-function AuthCard(props) {
+const AuthCard: FC = (props) => {
   return (
     <Box
-      bg={useColorModeValue("white", "gray.700")}
+      bg={useColorModeValue('white', 'gray.700')}
       py="8"
       px={{
-        base: "4",
-        md: "10",
+        base: '4',
+        md: '10',
       }}
       shadow="base"
       rounded={{
-        sm: "lg",
+        sm: 'lg',
       }}
       {...props}
     />
-  );
+  )
 }
 
-export default AuthCard;
+export default AuthCard

@@ -6,13 +6,20 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 
-function AuthText({
+type AuthTextProps = {
+  headingText: string
+  helperText: string
+  linkText: string
+  linkHref: string
+}
+
+const AuthText = ({
   headingText,
   helperText,
   linkHref,
   linkText,
   ...headingProps
-}) {
+}: AuthTextProps) => {
   const textColors = useColorModeValue('blue.500', 'blue.200')
 
   return (

@@ -1,6 +1,7 @@
 import { Box, useColorModeValue } from '@chakra-ui/react'
+import { FC } from 'react'
 
-function AuthContainer(props) {
+const AuthContainer: FC = (props) => {
   return (
     <Box
       bg={useColorModeValue('blue.50', 'inherit')}

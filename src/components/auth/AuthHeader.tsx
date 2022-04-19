@@ -5,9 +5,10 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { FC } from 'react'
 import ThemeButton from '../common/ThemeButton'
 
-function AuthHeader(props) {
+const AuthHeader: FC = (props) => {
   const textColors = useColorModeValue('blue.500', 'blue.200')
 
   return (
