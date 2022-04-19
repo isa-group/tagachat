@@ -41,7 +41,7 @@ function LoginForm() {
       setIsLoading(true)
 
       const result: SignInResponse | undefined = await signIn<'credentials'>(
-        'credentials',
+        'email-login',
         {
           redirect: false,
           email: email,

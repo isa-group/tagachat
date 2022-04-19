@@ -11,6 +11,8 @@ const nextAuthOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
+      id: 'email-login',
+      name: 'login',
       credentials: {
         email: {
           label: 'Email',
@@ -45,6 +47,9 @@ const nextAuthOptions: NextAuthOptions = {
       },
     }),
   ],
+  pages: {
+    signIn: '/login',
+  },
 }
 
 export default NextAuth(nextAuthOptions)
