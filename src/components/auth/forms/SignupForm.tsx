@@ -105,7 +105,9 @@ function SignupForm() {
               })}
             />
             {!errors.email ? (
-              <FormHelperText>Enter a valid email address</FormHelperText>
+              <FormHelperText>
+                Enter your corporate email address
+              </FormHelperText>
             ) : (
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             )}

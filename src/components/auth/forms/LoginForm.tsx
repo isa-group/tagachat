@@ -93,7 +93,7 @@ function LoginForm() {
                 },
               })}
             />
-            <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
           </FormControl>
 
           <PasswordInput
