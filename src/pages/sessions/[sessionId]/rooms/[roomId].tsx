@@ -7,26 +7,64 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  HStack,
+  Radio,
+  RadioGroup,
+  Stack,
   Text,
+  useRadio,
+  useRadioGroup,
   VStack,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
+import RadioCard from 'src/components/common/RadioCard'
 import useFetch from 'src/hooks/useFetch'
+import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 
-import { Select, OptionBase, GroupBase } from 'chakra-react-select'
+const Message = ({ message }) => {
+  const [tagFI, setTagFI] = useState('F')
+  const [tagDT, setTagDT] = useState('S')
 
-interface TagOption extends OptionBase {
-  value: string
-  label: string
+  function handleTagFIChange(e: string) {
+    console.log(e)
+    setTagFI(e)
+  }
+
+  function handleTagDTChange(e: string) {
+    console.log(e)
+    setTagDT(e)
+  }
+
+  return (
+    <Box w="100%" h="auto" padding="10" bg="gray.50" rounded="10">
+      <Flex height="100%" direction="row" align="center" justify="space-around">
+        <Text>{message.message}</Text>
+
+        <RadioGroup onChange={handleTagFIChange} value={tagFI}>
+          <Stack direction={{ base: 'column', lg: 'row' }}>
+            {tagFIOptions.map((option) => (
+              <Radio key={option} value={option}>
+                {option}
+              </Radio>
+            ))}
+          </Stack>
+        </RadioGroup>
+
+        <RadioGroup onChange={handleTagDTChange} value={tagDT}>
+          <Stack direction={{ base: 'column', lg: 'row' }}>
+            {tagDTOptions.map((option) => (
+              <Radio key={option} value={option}>
+                {option}
+              </Radio>
+            ))}
+          </Stack>
+        </RadioGroup>
+      </Flex>
+    </Box>
+  )
 }
-
-export const tagOptions = [
-  { value: 'S', label: 'Statement of information or explanation' },
-  { value: 'U', label: 'Opinion or indication of uncertainty' },
-  { value: 'D', label: 'Explicit Instruction' },
-]
 
 const Room = () => {
   const router = useRouter()
@@ -42,23 +80,9 @@ const Room = () => {
   if (isLoading) return <LoadingSpinner loading={isLoading} />
   if (isError) return <div>failed to load</div>
 
-  const roomData = data[0]
-
-  function handleChange(tags) {
-    if (tags.length > 0) {
-      setChangedMessages(changedMessages + 1)
-    } else {
-      setChangedMessages(changedMessages - 1)
-    }
-
-    setCompletionRate(
-      (changedMessages * 100) / data[0].first_block.messages.length
-    )
-  }
-
   return (
     <Box padding="8">
-      <Heading>Room: {roomId}</Heading>
+      <Heading>Room: {roomId} - messages</Heading>
 
       <Heading size="lg">First block</Heading>
 
@@ -66,41 +90,9 @@ const Room = () => {
         <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
       </CircularProgress>
 
-      <Heading size="md">Messages</Heading>
-
       <VStack spacing={30} mt={5}>
-        {roomData.first_block.messages.map((message, idx) => (
-          <Box
-            key={idx}
-            w="100%"
-            h="70px"
-            padding="10"
-            bg="gray.50"
-            rounded="10"
-          >
-            <Flex
-              height="100%"
-              direction="row"
-              align="center"
-              justify="space-around"
-            >
-              <Text>{message.message}</Text>
-              <Text>{message.timestamp}</Text>
-
-              <FormControl p={2} width="50%">
-                <FormLabel>Select tags</FormLabel>
-                <Select<TagOption, true, GroupBase<TagOption>>
-                  isMulti
-                  name="tags"
-                  size="sm"
-                  options={tagOptions}
-                  placeholder="Select some tags..."
-                  closeMenuOnSelect={false}
-                  onChange={handleChange}
-                />
-              </FormControl>
-            </Flex>
-          </Box>
+        {data[0].first_block.messages.map((message, idx) => (
+          <Message key={idx} message={message} />
         ))}
       </VStack>
     </Box>
