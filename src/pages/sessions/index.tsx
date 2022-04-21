@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Text,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { FC } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
@@ -8,7 +16,7 @@ const SessionList: FC = (props) => {
   const { data, isLoading, isError } = useFetch(
     'http://localhost:3005/sessions'
   )
-
+  const bg = useColorModeValue('gray.50', 'gray.700')
   const router = useRouter()
 
   if (isError) return <div>failed to load</div>
@@ -27,7 +35,7 @@ const SessionList: FC = (props) => {
             w="100%"
             h="70px"
             padding="10"
-            bg="gray.50"
+            bg={bg}
             rounded="10"
           >
             <Flex

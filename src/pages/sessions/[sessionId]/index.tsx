@@ -1,4 +1,11 @@
-import { Box, Flex, Heading, Text, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Flex,
+  Heading,
+  Text,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import useFetch from 'src/hooks/useFetch'
@@ -6,6 +13,9 @@ import useFetch from 'src/hooks/useFetch'
 const Session = () => {
   const router = useRouter()
   const { sessionId } = router.query
+
+  const bg = useColorModeValue('gray.50', 'gray.700')
+  const bgOnHover = useColorModeValue('gray.200', 'blue.800')
 
   const { data, isLoading, isError } = useFetch(
     `http://localhost:3005/sessions/${sessionId}/rooms`
@@ -37,13 +47,13 @@ const Session = () => {
             w="100%"
             h="150px"
             padding="10"
-            bg="gray.50"
+            bg={bg}
             rounded="10"
             onClick={() =>
               router.push(`/sessions/${sessionId}/rooms/${room.id}`)
             }
             _hover={{
-              bg: 'gray.200',
+              bg: bgOnHover,
               cursor: 'pointer',
             }}
           >
