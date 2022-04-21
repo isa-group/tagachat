@@ -35,22 +35,29 @@ const Session = () => {
           <Box
             key={room.id}
             w="100%"
-            h="70px"
+            h="150px"
             padding="10"
             bg="gray.50"
             rounded="10"
             onClick={() =>
               router.push(`/sessions/${sessionId}/rooms/${room.id}`)
             }
+            _hover={{
+              bg: 'gray.200',
+              cursor: 'pointer',
+            }}
           >
             <Flex
               height="100%"
               direction="row"
               align="center"
               justify="space-between"
+              grow="1"
+              shrink="1"
+              basis="0"
             >
               <div>
-                <Text>Room: {room.id}</Text>
+                <Text size="lg">{room.id}</Text>
               </div>
               <div>
                 <Text>
@@ -70,7 +77,7 @@ const Session = () => {
                     %
                   </Text>
                 ) : (
-                  <Text>Completed :)</Text>
+                  <Text>Completed!</Text>
                 )}
               </div>
               <div>
