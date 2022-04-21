@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Heading, Text, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { FC } from 'react'
+import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import useFetch from 'src/hooks/useFetch'
-import LoadingSpinner from '../common/LoadingSpinner'
 
 const SessionList: FC = (props) => {
   const { data, isLoading, isError } = useFetch(

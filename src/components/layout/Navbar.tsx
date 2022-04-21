@@ -29,7 +29,7 @@ const NavLinks = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
   <>
     <ActiveThemedLink href="/">Home Page</ActiveThemedLink>
     {isLoggedIn && (
-      <ActiveThemedLink href="/example">Example page</ActiveThemedLink>
+      <ActiveThemedLink href="/sessions">Sessions</ActiveThemedLink>
     )}
   </>
 )
