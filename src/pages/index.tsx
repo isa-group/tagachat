@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { Heading } from '@chakra-ui/react'
+import SessionList from 'src/components/sessions/SessionList'
 
 const Home: NextPage = () => {
   return (
@@ -10,7 +10,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Heading>Hi there</Heading>
+      <SessionList />
     </>
   )
 }
