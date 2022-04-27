@@ -45,13 +45,13 @@ const Message = ({ id, message, setTags }) => {
     })
 
   return (
-    <Box w="100%" h="auto" padding="10" bg={bg} rounded="10">
+    <Box w="100%" h="auto" padding="4" bg={bg} rounded="10">
       <Flex height="100%" direction="row" align="center" justify="space-around">
         <Text>{message}</Text>
 
         <Stack
           {...getRootFIProps()}
-          direction={{ base: 'column', lg: 'row' }}
+          direction={{ base: 'column', xl: 'row' }}
           spacing="0"
         >
           {tagFIOptions.map((value) => (

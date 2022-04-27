@@ -54,7 +54,7 @@ const Room = () => {
         </CircularProgress>
       </Flex>
 
-      <VStack spacing={30} mt={5}>
+      <VStack spacing="20px" mt={5}>
         {data?.[0].first_block.messages.map((message) => (
           <Message key={message.id} setTags={setTags} {...message} />
         ))}
