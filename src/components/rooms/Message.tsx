@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Text, useRadioGroup } from '@chakra-ui/react'
+import { Box, Flex, Spacer, Stack, Text, useRadioGroup } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import { RadioCard } from '../common/RadioCard'
@@ -36,9 +36,18 @@ const Message = ({ id, backgroundColor, message, setTags }) => {
     })
 
   return (
-    <Box w="100%" h="auto" padding="4" bg={backgroundColor} rounded="10">
-      <Flex height="100%" direction="row" align="center" justify="space-around">
+    <Box
+      w="100%"
+      h="auto"
+      paddingY="4"
+      paddingX="10"
+      bg={backgroundColor}
+      rounded="10"
+    >
+      <Flex height="100%" direction="row" align="center" gap="25px">
         <Text>{message}</Text>
+
+        <Spacer />
 
         <Stack
           {...getRootFIProps()}
