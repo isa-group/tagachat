@@ -5,24 +5,44 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  useToast,
   VStack,
 } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import useFetch from 'src/hooks/useFetch'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
   const bg = useColorModeValue('gray.50', 'gray.700')
+  const toast = useToast()
 
   const { data: session } = useSession()
-  console.log(session)
 
   const { data, isLoading, isError } = useFetch(
     'http://localhost:3005/sessions'
   )
+
+  useEffect(() => {
+    if (
+      !(
+        session?.user.role === 'admin' ||
+        session?.user.role === 'reviewer' ||
+        session?.user.isActive
+      )
+    ) {
+      toast({
+        title: "You don't have permissions to view this page",
+        description: 'Redirecting you to homepage...',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+      router.push('/')
+    }
+  }, [router, session, toast])
 
   if (isError) return <div>failed to load</div>
   if (isLoading) return <LoadingSpinner loading={isLoading} />
