@@ -2,7 +2,10 @@ import {
   Box,
   CircularProgress,
   CircularProgressLabel,
+  Flex,
   Heading,
+  Spacer,
+  useColorModeValue,
   VStack,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
@@ -23,6 +26,8 @@ const Room = () => {
     `http://localhost:3005/sessions/${sessionId}/rooms?id=${roomId}`
   )
 
+  const bg = useColorModeValue('white', 'gray.800')
+
   useEffect(() => {
     const dataLength = data?.[0].first_block.messages.length
     const responseLength = tags.length
@@ -34,13 +39,20 @@ const Room = () => {
 
   return (
     <Box padding="8">
-      <Heading>Room: {roomId} - messages</Heading>
-
-      <Heading size="lg">First block</Heading>
-
-      <CircularProgress value={completionRate}>
-        <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
-      </CircularProgress>
+      <Flex
+        sx={{
+          bg: bg,
+          paddingY: '4',
+          position: 'sticky',
+          top: '0',
+        }}
+      >
+        <Heading>Room {roomId} - first block</Heading>
+        <Spacer />
+        <CircularProgress value={completionRate}>
+          <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
+        </CircularProgress>
+      </Flex>
 
       <VStack spacing={30} mt={5}>
         {data?.[0].first_block.messages.map((message) => (
