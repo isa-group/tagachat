@@ -1,10 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-
 import clientPromise from 'src/lib/mongodb'
 import { verifyPassword } from 'src/lib/bcryptjs'
-
-const administrators = ['admin@gmail.com']
 
 const nextAuthOptions: NextAuthOptions = {
   secret: process.env.NEXT_AUTH_SECRET,
@@ -51,15 +48,13 @@ const nextAuthOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user?.email) token.isAdmin = administrators.includes(user.email)
       if (user?.role) token.role = user.role
       if (user?.isActive) token.isActive = user.isActive
       return token
     },
-    async session({ session, user, token }) {
-      if (token?.isAdmin) session.user.isAdmin = token.isAdmin
-      if (token?.role) session.user.role = token.role
-      if (token?.isActive) session.user.isActive = token.isActive
+    async session({ session, token }) {
+      if (token?.role) session.user.role = token.role as string
+      if (token?.isActive) session.user.isActive = token.isActive as boolean
       return session
     },
   },
