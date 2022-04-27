@@ -1,0 +1,143 @@
+{
+  "reviewers": [
+    {
+      "id": 1,
+      "name": "Leanne Graham",
+      "email": "leanne@graham.com"
+    },
+    {
+      "id": 2,
+      "name": "Gori",
+      "email": "Gori@gori.com"
+    }
+  ],
+  "sessions": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    },
+    {
+      "id": 3
+    }
+  ],
+  "rooms": [
+    {
+      "id": 1,
+      "sessionId": 1,
+      "first_block": {
+        "reviewer1CompletionRate": 60,
+        "reviewer2CompletionRate": 30,
+        "messages": [
+          {
+            "id": 1,
+            "message": "Hola",
+            "FIlabel": "F",
+            "DTlabel": "S"
+          },
+          {
+            "id": 2,
+            "message": "Chao",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          }
+        ]
+      },
+      "second_block": {
+        "reviewer1CompletionRate": 40,
+        "reviewer2CompletionRate": 60,
+        "messages": [
+          {
+            "id": 1,
+            "message": "mensaje 1 segundo bloque",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 2,
+            "message": "mensaje 2 segundo bloque",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "sessionId": 1,
+      "first_block": {
+        "reviewer1CompletionRate": 10,
+        "reviewer2CompletionRate": 0,
+        "messages": [
+          {
+            "id": 1,
+            "message": "mensaje 1 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 2,
+            "message": "mensaje 2 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 3,
+            "message": "mensaje 3 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 4,
+            "message": "mensaje 4 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 5,
+            "message": "mensaje 5 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 6,
+            "message": "mensaje 6 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 7,
+            "message": "mensaje 7 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 8,
+            "message": "mensaje 8 del cuarto 2",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          }
+        ]
+      },
+      "second_block": {
+        "reviewer1CompletionRate": 0,
+        "reviewer2CompletionRate": 0,
+        "messages": [
+          {
+            "message": "Hola",
+            "reviewerId": 1,
+            "timestamp": "2021-12-10T10:21:05.059Z",
+            "labels": ["S", "U", "D"]
+          },
+          {
+            "message": "Chao",
+            "reviewerId": 2,
+            "timestamp": "2021-12-10T10:21:05.059Z",
+            "labels": ["S", "D"]
+          }
+        ]
+      }
+    }
+  ]
+}
