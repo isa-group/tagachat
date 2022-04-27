@@ -3,6 +3,7 @@ import {
   CircularProgress,
   CircularProgressLabel,
   Flex,
+  Text,
   Heading,
   Spacer,
   useColorModeValue,
@@ -22,11 +23,13 @@ const Room = () => {
   const [completionRate, setCompletionRate] = useState(0)
   const [tags, setTags] = useState([])
 
+  const bg = useColorModeValue('white', 'gray.800')
+  const user1bg = useColorModeValue('gray.100', 'gray.600')
+  const user2bg = useColorModeValue('blue.300', 'blue.900')
+
   const { data, isLoading, isError } = useFetch(
     `http://localhost:3005/sessions/${sessionId}/rooms?id=${roomId}`
   )
-
-  const bg = useColorModeValue('white', 'gray.800')
 
   useEffect(() => {
     const dataLength = data?.[0].first_block.messages.length
@@ -49,6 +52,15 @@ const Room = () => {
       >
         <Heading>Room {roomId} - first block</Heading>
         <Spacer />
+        <Flex direction="row" align="center" justify="center" gap="30px">
+          <Box bg={user1bg} padding="2" rounded="10">
+            <Text>User ID: {data[0].user1Id}</Text>
+          </Box>
+          <Box bg={user2bg} padding="2" rounded="10">
+            <Text>User ID: {data[0].user2Id}</Text>
+          </Box>
+        </Flex>
+        <Spacer />
         <CircularProgress value={completionRate}>
           <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
         </CircularProgress>
@@ -56,7 +68,14 @@ const Room = () => {
 
       <VStack spacing="20px" mt={5}>
         {data?.[0].first_block.messages.map((message) => (
-          <Message key={message.id} setTags={setTags} {...message} />
+          <Message
+            {...message}
+            key={message.id}
+            setTags={setTags}
+            backgroundColor={
+              data[0].user1Id === message.userId ? user1bg : user2bg
+            }
+          />
         ))}
       </VStack>
     </Box>

@@ -26,19 +26,37 @@
     {
       "id": 1,
       "sessionId": 1,
+      "user1Id": 10,
+      "user2Id": 20,
       "first_block": {
         "reviewer1CompletionRate": 60,
         "reviewer2CompletionRate": 30,
         "messages": [
           {
             "id": 1,
+            "userId": 10,
             "message": "Hola",
             "FIlabel": "F",
             "DTlabel": "S"
           },
           {
             "id": 2,
+            "userId": 20,
             "message": "Chao",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 3,
+            "userId": 20,
+            "message": "mensaje 3",
+            "FIlabel": "I",
+            "DTlabel": "D"
+          },
+          {
+            "id": 4,
+            "userId": 10,
+            "message": "mensaje 4",
             "FIlabel": "I",
             "DTlabel": "D"
           }
@@ -50,12 +68,14 @@
         "messages": [
           {
             "id": 1,
+            "userId": 20,
             "message": "mensaje 1 segundo bloque",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 2,
+            "userId": 20,
             "message": "mensaje 2 segundo bloque",
             "FIlabel": "I",
             "DTlabel": "D"
@@ -66,54 +86,64 @@
     {
       "id": 2,
       "sessionId": 1,
+      "user1Id": 1,
+      "user2Id": 2,
       "first_block": {
         "reviewer1CompletionRate": 10,
         "reviewer2CompletionRate": 0,
         "messages": [
           {
             "id": 1,
+            "userId": 1,
             "message": "mensaje 1 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 2,
+            "userId": 1,
             "message": "mensaje 2 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 3,
+            "userId": 2,
             "message": "mensaje 3 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 4,
+            "userId": 1,
             "message": "mensaje 4 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 5,
+            "userId": 2,
             "message": "mensaje 5 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 6,
+            "userId": 1,
             "message": "mensaje 6 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 7,
+            "userId": 2,
             "message": "mensaje 7 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"
           },
           {
             "id": 8,
+            "userId": 2,
             "message": "mensaje 8 del cuarto 2",
             "FIlabel": "I",
             "DTlabel": "D"

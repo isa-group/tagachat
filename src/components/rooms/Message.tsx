@@ -1,18 +1,9 @@
-import {
-  Box,
-  Flex,
-  Stack,
-  Text,
-  useColorModeValue,
-  useRadioGroup,
-} from '@chakra-ui/react'
+import { Box, Flex, Stack, Text, useRadioGroup } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import { RadioCard } from '../common/RadioCard'
 
-const Message = ({ id, message, setTags }) => {
-  const bg = useColorModeValue('gray.50', 'gray.700')
-
+const Message = ({ id, backgroundColor, message, setTags }) => {
   const [selectedTags, setSelectedTags] = useState({
     id,
     tagFI: '',
@@ -45,7 +36,7 @@ const Message = ({ id, message, setTags }) => {
     })
 
   return (
-    <Box w="100%" h="auto" padding="4" bg={bg} rounded="10">
+    <Box w="100%" h="auto" padding="4" bg={backgroundColor} rounded="10">
       <Flex height="100%" direction="row" align="center" justify="space-around">
         <Text>{message}</Text>
 
