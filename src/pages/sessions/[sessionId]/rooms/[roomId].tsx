@@ -17,7 +17,7 @@ const Room = () => {
   const { sessionId, roomId } = router.query
 
   const [completionRate, setCompletionRate] = useState(0)
-  const [changedMessages, setChangedMessages] = useState(0)
+  const [tags, setTags] = useState([])
 
   const { data, isLoading, isError } = useFetch(
     `http://localhost:3005/sessions/${sessionId}/rooms?id=${roomId}`
@@ -32,13 +32,13 @@ const Room = () => {
 
       <Heading size="lg">First block</Heading>
 
-      <CircularProgress value={completionRate} color="green.400">
+      <CircularProgress value={completionRate}>
         <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
       </CircularProgress>
 
       <VStack spacing={30} mt={5}>
-        {data[0].first_block.messages.map((message, idx) => (
-          <Message key={idx} message={message} />
+        {data?.[0].first_block.messages.map((message) => (
+          <Message key={message.id} setTags={setTags} {...message} />
         ))}
       </VStack>
     </Box>

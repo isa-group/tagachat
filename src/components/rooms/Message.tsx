@@ -6,22 +6,42 @@ import {
   useColorModeValue,
   useRadioGroup,
 } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import { RadioCard } from '../common/RadioCard'
 
-const Message = ({ message, handleChange }) => {
+const Message = ({ id, message, setTags }) => {
   const bg = useColorModeValue('gray.50', 'gray.700')
+
+  const [selectedTags, setSelectedTags] = useState({
+    id,
+    tagFI: '',
+    tagDT: '',
+  })
+
+  useEffect(() => {
+    if (selectedTags.tagFI === '' || selectedTags.tagDT === '') return
+
+    setTags((tags) => [
+      ...tags.filter((tag) => tag.id !== selectedTags.id),
+      { ...selectedTags },
+    ])
+  }, [id, selectedTags, setTags])
 
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
       name: 'tagsFI',
-      onChange: handleChange,
+      onChange: (tag) => {
+        setSelectedTags((tags) => ({ ...tags, tagFI: tag }))
+      },
     })
 
   const { getRootProps: getRootDTProps, getRadioProps: getRadioDTProps } =
     useRadioGroup({
       name: 'tagsDT',
-      onChange: handleChange,
+      onChange: (tag) => {
+        setSelectedTags((tags) => ({ ...tags, tagDT: tag }))
+      },
     })
 
   return (
