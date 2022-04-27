@@ -6,7 +6,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
 import useFetch from 'src/hooks/useFetch'
@@ -22,6 +22,12 @@ const Room = () => {
   const { data, isLoading, isError } = useFetch(
     `http://localhost:3005/sessions/${sessionId}/rooms?id=${roomId}`
   )
+
+  useEffect(() => {
+    const dataLength = data?.[0].first_block.messages.length
+    const responseLength = tags.length
+    setCompletionRate(Math.round((responseLength / dataLength) * 100))
+  }, [data, tags])
 
   if (isLoading) return <LoadingSpinner loading={isLoading} />
   if (isError) return <div>failed to load</div>
