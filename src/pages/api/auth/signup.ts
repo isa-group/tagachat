@@ -39,6 +39,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     email,
     name,
     password: hashedPassword,
+    role: 'reviewer',
+    isActive: false,
   })
 
   return res.status(201).json({ message: `User was created` })

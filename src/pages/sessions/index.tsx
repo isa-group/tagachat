@@ -7,17 +7,22 @@ import {
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import useFetch from 'src/hooks/useFetch'
 
 const SessionList: FC = (props) => {
+  const router = useRouter()
+  const bg = useColorModeValue('gray.50', 'gray.700')
+
+  const { data: session } = useSession()
+  console.log(session)
+
   const { data, isLoading, isError } = useFetch(
     'http://localhost:3005/sessions'
   )
-  const bg = useColorModeValue('gray.50', 'gray.700')
-  const router = useRouter()
 
   if (isError) return <div>failed to load</div>
   if (isLoading) return <LoadingSpinner loading={isLoading} />
