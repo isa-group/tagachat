@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Box } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import { FC } from 'react'
@@ -17,11 +17,11 @@ const Layout: FC<{}> = ({ children }) => {
   }
 
   return (
-    <Box position="relative" minHeight="100vh">
+    <Flex direction="column" minHeight="100vh">
       <Navbar />
       <main>{children}</main>
       <Footer />
-    </Box>
+    </Flex>
   )
 }
 
