@@ -90,29 +90,10 @@
       "user1Id": 1,
       "user2Id": 2,
       "first_block": {
-        "reviewer1CompletionRate": 10,
+        "reviewer1CompletionRate": 100,
         "reviewer2CompletionRate": 0,
+        "missingCompletionRate": 0,
         "messages": [
-          {
-            "id": 1,
-            "userId": 1,
-            "message": "mensaje 1 del cuarto 2"
-          },
-          {
-            "id": 2,
-            "userId": 1,
-            "message": "mensaje 2 del cuarto 2"
-          },
-          {
-            "id": 3,
-            "userId": 2,
-            "message": "mensaje 3 del cuarto 2"
-          },
-          {
-            "id": 4,
-            "userId": 1,
-            "message": "mensaje 4 del cuarto 2"
-          },
           {
             "id": 5,
             "userId": 2,
@@ -157,6 +138,34 @@
             "id": 13,
             "userId": 2,
             "message": "mensaje 13 del cuarto 2"
+          },
+          {
+            "id": 1,
+            "userId": 1,
+            "message": "mensaje 1 del cuarto 2",
+            "tagFI": "F",
+            "tagDT": "S"
+          },
+          {
+            "id": 3,
+            "userId": 2,
+            "message": "mensaje 3 del cuarto 2",
+            "tagFI": "I",
+            "tagDT": "U"
+          },
+          {
+            "id": 2,
+            "userId": 1,
+            "message": "mensaje 2 del cuarto 2",
+            "tagFI": "I",
+            "tagDT": "D"
+          },
+          {
+            "id": 4,
+            "userId": 1,
+            "message": "mensaje 4 del cuarto 2",
+            "tagFI": "F",
+            "tagDT": "U"
           }
         ]
       },

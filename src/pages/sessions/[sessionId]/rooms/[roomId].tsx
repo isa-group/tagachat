@@ -60,7 +60,7 @@ const Room: FC = () => {
   const [data, setData] = useState<RoomData>()
 
   const [completionRate, setCompletionRate] = useState(0)
-  const [tags, setTags] = useState([])
+  const [messages, setMessages] = useState([])
 
   const bg = useColorModeValue('white', 'gray.800')
   const user1bg = useColorModeValue('gray.100', 'gray.600')
@@ -74,6 +74,7 @@ const Room: FC = () => {
           `http://localhost:3005/sessions/${sessionId}/rooms/${roomId}`
         )
         setData(response)
+        setMessages(response.first_block.messages)
       } catch (error: any) {
         console.error(error.message)
       } finally {
@@ -87,10 +88,10 @@ const Room: FC = () => {
   useEffect(() => {
     if (data) {
       const dataLength = data?.first_block?.messages.length
-      const responseLength = tags.length
+      const responseLength = messages.length
       setCompletionRate(Math.round((responseLength / dataLength) * 100))
     }
-  }, [data, tags])
+  }, [data, messages])
 
   const saveResults = async () => {
     try {
@@ -101,7 +102,7 @@ const Room: FC = () => {
             reviewer1CompletionRate: completionRate,
             reviewer2CompletionRate: 0,
             missingCompletionRate: 100 - completionRate,
-            messages: tags,
+            messages: messages,
           },
         }
       )
@@ -150,7 +151,7 @@ const Room: FC = () => {
           {data?.first_block.messages.map((message) => (
             <Message
               key={message.id}
-              setTags={setTags}
+              setTags={setMessages}
               backgroundColor={
                 data?.user1Id === message.userId ? user1bg : user2bg
               }
