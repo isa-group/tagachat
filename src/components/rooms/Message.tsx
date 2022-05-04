@@ -3,11 +3,31 @@ import { useEffect, useState } from 'react'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import { RadioCard } from '../common/RadioCard'
 
-const Message = ({ id, backgroundColor, message, setTags }) => {
+type MessageProps = {
+  id: number
+  backgroundColor: string
+  message: string
+  tagFI: string
+  tagDT: string
+  userId: number
+  setTags: (tags: string[]) => void
+}
+
+const Message = ({
+  id,
+  backgroundColor,
+  message,
+  userId,
+  setTags,
+  tagFI,
+  tagDT,
+}: MessageProps) => {
   const [selectedTags, setSelectedTags] = useState({
     id,
-    tagFI: '',
-    tagDT: '',
+    userId,
+    message,
+    tagFI: tagFI ? tagFI : '',
+    tagDT: tagDT ? tagDT : '',
   })
 
   useEffect(() => {
@@ -22,6 +42,7 @@ const Message = ({ id, backgroundColor, message, setTags }) => {
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
       name: 'tagsFI',
+      defaultValue: tagFI,
       onChange: (tag) => {
         setSelectedTags((tags) => ({ ...tags, tagFI: tag }))
       },
@@ -30,6 +51,7 @@ const Message = ({ id, backgroundColor, message, setTags }) => {
   const { getRootProps: getRootDTProps, getRadioProps: getRadioDTProps } =
     useRadioGroup({
       name: 'tagsDT',
+      defaultValue: tagDT,
       onChange: (tag) => {
         setSelectedTags((tags) => ({ ...tags, tagDT: tag }))
       },

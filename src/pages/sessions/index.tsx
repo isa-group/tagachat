@@ -8,9 +8,10 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react'
+import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import useFetch from 'src/hooks/useFetch'
 
@@ -21,9 +22,16 @@ const SessionList: FC = (props) => {
 
   const { data: session } = useSession()
 
-  const { data, isLoading, isError } = useFetch(
-    'http://localhost:3005/sessions'
-  )
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await axios.get(`http://localhost:3005/sessions`)
+      setData(data)
+    }
+
+    getData()
+  }, [])
 
   useEffect(() => {
     if (
@@ -43,9 +51,6 @@ const SessionList: FC = (props) => {
       router.push('/')
     }
   }, [router, session, toast])
-
-  if (isError) return <div>failed to load</div>
-  if (isLoading) return <LoadingSpinner loading={isLoading} />
 
   return (
     <Box padding="8">

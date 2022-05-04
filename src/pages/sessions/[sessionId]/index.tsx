@@ -6,7 +6,9 @@ import {
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react'
+import axios from 'axios'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import useFetch from 'src/hooks/useFetch'
 
@@ -17,12 +19,18 @@ const Session = () => {
   const bg = useColorModeValue('gray.50', 'gray.700')
   const bgOnHover = useColorModeValue('gray.200', 'blue.800')
 
-  const { data, isLoading, isError } = useFetch(
-    `http://localhost:3005/sessions/${sessionId}/rooms`
-  )
+  const [data, setData] = useState([])
 
-  if (isError) return <div>failed to load</div>
-  if (isLoading) return <LoadingSpinner loading={isLoading} />
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await axios.get(
+        `http://localhost:3005/sessions/${sessionId}/rooms`
+      )
+      setData(data)
+    }
+
+    getData()
+  }, [sessionId])
 
   return (
     <Box padding="8">
