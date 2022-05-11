@@ -1,7 +1,10 @@
 import {
   Box,
+  Button,
   Flex,
   Heading,
+  HStack,
+  Spacer,
   Text,
   useColorModeValue,
   VStack,
@@ -9,8 +12,7 @@ import {
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import LoadingSpinner from 'src/components/common/LoadingSpinner'
-import useFetch from 'src/hooks/useFetch'
+import { CSVLink } from 'react-csv'
 
 const Session = () => {
   const router = useRouter()
@@ -34,8 +36,13 @@ const Session = () => {
 
   return (
     <Box padding="8">
-      <Heading>Session: {sessionId}</Heading>
-
+      <HStack>
+        <Heading>Session: {sessionId}</Heading>
+        <Spacer />
+        <CSVLink data={data} filename="results.csv">
+          <Button>Export</Button>
+        </CSVLink>
+      </HStack>
       <VStack spacing={30} mt={5}>
         <Box w="100%" h="70px" padding="10" rounded="10">
           <Flex
