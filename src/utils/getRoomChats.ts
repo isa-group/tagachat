@@ -17,7 +17,6 @@ export default function getRoomChats(dataset) {
   var chats = new Map()
 
   for (let [key, value] of rooms) {
-    console.log(key + ' = ' + value)
     let p1 = value[0]
     let p2 = value[1]
 

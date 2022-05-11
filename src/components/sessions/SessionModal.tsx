@@ -16,10 +16,11 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import getRoomChats from 'src/utils/getRoomChats'
 import PasswordInput from '../auth/PasswordInput'
 import LoadingSpinner from '../common/LoadingSpinner'
 
-const SessionModal = ({ isOpen, onClose }) => {
+const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
   const {
     register,
     handleSubmit,
@@ -37,14 +38,11 @@ const SessionModal = ({ isOpen, onClose }) => {
       setIsLoading(true)
 
       const result = await fetch(
-        'https://twincode-data.herokuapp.com/api/v1/datasets/standard/' +
-          session +
-          '/full',
+        `https://twincode-data.herokuapp.com/api/v1/datasets/standard/${session}/full`,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
             Authorization:
               'Basic ' +
               Buffer.from(username + ':' + password, 'utf8').toString('base64'),
@@ -53,6 +51,9 @@ const SessionModal = ({ isOpen, onClose }) => {
       )
       const data = await result.json()
       console.log(data)
+
+      console.log(getRoomChats(data))
+      setTwincodeData(data)
       toast({
         title: 'Success',
         description: 'Session loaded successfully',

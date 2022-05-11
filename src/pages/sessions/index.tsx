@@ -26,6 +26,7 @@ const SessionList: FC = (props) => {
   const { data: session } = useSession()
 
   const [data, setData] = useState([])
+  const [twincodeData, setTwincodeData] = useState([])
 
   useEffect(() => {
     const getData = async () => {
@@ -69,7 +70,11 @@ const SessionList: FC = (props) => {
         </Button>
       </HStack>
 
-      <SessionModal isOpen={isOpen} onClose={onClose} />
+      <SessionModal
+        isOpen={isOpen}
+        onClose={onClose}
+        setTwincodeData={setTwincodeData}
+      />
 
       <VStack spacing={30} mt={5}>
         {data.map((session) => (
