@@ -3,8 +3,11 @@ import {
   Button,
   Flex,
   Heading,
+  HStack,
+  Spacer,
   Text,
   useColorModeValue,
+  useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react'
@@ -12,13 +15,13 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
-import LoadingSpinner from 'src/components/common/LoadingSpinner'
-import useFetch from 'src/hooks/useFetch'
+import SessionModal from 'src/components/sessions/SessionModal'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
   const bg = useColorModeValue('gray.50', 'gray.700')
   const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { data: session } = useSession()
 
@@ -54,9 +57,19 @@ const SessionList: FC = (props) => {
 
   return (
     <Box padding="8">
-      <Heading as="h1" size="lg">
-        Sessions
-      </Heading>
+      <HStack>
+        <Heading as="h1" size="lg">
+          Sessions
+        </Heading>
+
+        <Spacer />
+
+        <Button onClick={onOpen}>
+          <Text>Import Session</Text>
+        </Button>
+      </HStack>
+
+      <SessionModal isOpen={isOpen} onClose={onClose} />
 
       <VStack spacing={30} mt={5}>
         {data.map((session) => (
