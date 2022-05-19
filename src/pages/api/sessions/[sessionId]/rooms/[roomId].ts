@@ -1,11 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import getSessions from 'src/api/sessions/getSessions'
+import getRoom from 'src/api/rooms/getRoom'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET': {
-      const { roomId } = req.query
-      res.end(`roomId: ${roomId}`)
+      return getRoom(req, res)
     }
 
     case 'PUT': {
