@@ -1,6 +1,6 @@
 # tag-a-chat
 
-Tagging managing app for chats
+Tag managing app for chats
 
 ## Getting Started
 
