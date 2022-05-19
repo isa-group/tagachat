@@ -15,48 +15,15 @@ import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
-import { tagsFI, tagsDT } from 'src/types/tags.type'
+import { Room } from 'src/types/room.type'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
-
-type RoomData = {
-  _id: string
-  sessionId: string
-  user1Id: number
-  user2Id: number
-  first_block: {
-    reviewer1CompletionRate: number
-    reviewer2CompletionRate: number
-    messages: [
-      {
-        id: number
-        userId: number
-        message: string
-        tagFI: tagsFI
-        tagDT: tagsDT
-      }
-    ]
-  }
-  second_block: {
-    reviewer1CompletionRate: number
-    reviewer2CompletionRate: number
-    messages: [
-      {
-        id: number
-        userId: number
-        message: string
-        tagFI: tagsFI
-        tagDT: tagsDT
-      }
-    ]
-  }
-}
 
 const Room: FC = () => {
   const router = useRouter()
   const { sessionId, roomId } = router.query
 
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<RoomData>()
+  const [data, setData] = useState<Room>()
 
   const [completionRate, setCompletionRate] = useState(0)
   const [messages, setMessages] = useState([])
@@ -86,7 +53,7 @@ const Room: FC = () => {
     }
 
     getData()
-  }, [roomId, sessionId])
+  }, [router.isReady, roomId, sessionId])
 
   useEffect(() => {
     if (data) {
