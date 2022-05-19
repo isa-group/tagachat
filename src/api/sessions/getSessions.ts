@@ -9,7 +9,7 @@ async function getSessions(req: NextApiRequest, res: NextApiResponse) {
     const sessions = await db.collection('sessions').find().toArray()
 
     return res.status(200).json({
-      message: JSON.parse(JSON.stringify(sessions)),
+      data: sessions,
       success: true,
     })
   } catch (error) {
