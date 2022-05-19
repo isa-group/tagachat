@@ -15,6 +15,7 @@ import useFetch from 'src/hooks/useFetch'
 const Session = () => {
   const router = useRouter()
   const { sessionId } = router.query
+  const [isLoading, setIsLoading] = useState(true)
 
   const bg = useColorModeValue('gray.50', 'gray.700')
   const bgOnHover = useColorModeValue('gray.200', 'blue.800')
@@ -22,15 +23,20 @@ const Session = () => {
   const [data, setData] = useState([])
 
   useEffect(() => {
+    if (!router.isReady) return
+
     const getData = async () => {
-      const { data } = await axios.get(
-        `http://localhost:3005/sessions/${sessionId}/rooms`
-      )
+      const {
+        data: { data },
+      } = await axios.get(`/api/sessions/${sessionId}/rooms`)
       setData(data)
+      setIsLoading(false)
     }
 
     getData()
-  }, [sessionId])
+  }, [router.isReady, sessionId])
+
+  if (isLoading) return <LoadingSpinner loading={isLoading} />
 
   return (
     <Box padding="8">
@@ -49,16 +55,17 @@ const Session = () => {
             <Heading size="lg">Block 2</Heading>
           </Flex>
         </Box>
+
         {data.map((room) => (
           <Box
-            key={room.id}
+            key={room._id}
             w="100%"
             h="150px"
             padding="10"
             bg={bg}
             rounded="10"
             onClick={() =>
-              router.push(`/sessions/${sessionId}/rooms/${room.id}`)
+              router.push(`/sessions/${sessionId}/rooms/${room._id}`)
             }
             _hover={{
               bg: bgOnHover,
@@ -75,7 +82,7 @@ const Session = () => {
               basis="0"
             >
               <div>
-                <Text size="lg">{room.id}</Text>
+                <Text size="lg">{room._id}</Text>
               </div>
               <div>
                 <Text>

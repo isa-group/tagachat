@@ -15,49 +15,15 @@ import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
-import { tagsFI, tagsDT } from 'src/types/tags.type'
-
-type RoomData = {
-  id: number
-  sessionId: number
-  user1Id: number
-  user2Id: number
-  first_block: {
-    reviewer1CompletionRate: number
-    reviewer2CompletionRate: number
-    missingCompletionRate: number
-    messages: [
-      {
-        id: number
-        userId: number
-        message: string
-        tagFI: tagsFI
-        tagDT: tagsDT
-      }
-    ]
-  }
-  second_block: {
-    reviewer1CompletionRate: number
-    reviewer2CompletionRate: number
-    missingCompletionRate: number
-    messages: [
-      {
-        id: number
-        userId: number
-        message: string
-        tagFI: tagsFI
-        tagDT: tagsDT
-      }
-    ]
-  }
-}
+import { Room } from 'src/types/room.type'
+import { getErrorMessage } from 'src/utils/getErrorMessage'
 
 const Room: FC = () => {
   const router = useRouter()
   const { sessionId, roomId } = router.query
 
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<RoomData>()
+  const [data, setData] = useState<Room>()
 
   const [completionRate, setCompletionRate] = useState(0)
   const [messages, setMessages] = useState([])
@@ -67,23 +33,27 @@ const Room: FC = () => {
   const user2bg = useColorModeValue('blue.300', 'blue.900')
 
   useEffect(() => {
+    if (!router.isReady) return
+    if (!(sessionId && roomId)) return
+
     const getData = async () => {
-      setLoading(true)
       try {
-        const { data: response } = await axios.get(
-          `http://localhost:3005/sessions/${sessionId}/rooms/${roomId}`
-        )
-        setData(response)
-        setMessages(response.first_block.messages)
-      } catch (error: any) {
-        console.error(error.message)
+        setLoading(true)
+        const {
+          data: { data },
+        } = await axios.get(`/api/sessions/${sessionId}/rooms/${roomId}`)
+
+        setData(data)
+        setMessages(data.first_block.messages)
+      } catch (error) {
+        console.error(getErrorMessage(error))
       } finally {
         setLoading(false)
       }
     }
 
     getData()
-  }, [roomId, sessionId])
+  }, [router.isReady, roomId, sessionId])
 
   useEffect(() => {
     if (data) {
@@ -96,7 +66,7 @@ const Room: FC = () => {
   const saveResults = async () => {
     try {
       const response = await axios.patch(
-        `http://localhost:3005/sessions/${sessionId}/rooms/${roomId}`,
+        `/api/sessions/${sessionId}/rooms/${roomId}`,
         {
           first_block: {
             reviewer1CompletionRate: completionRate,
