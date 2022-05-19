@@ -16,16 +16,16 @@ import { FC, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
 import { tagsFI, tagsDT } from 'src/types/tags.type'
+import { getErrorMessage } from 'src/utils/getErrorMessage'
 
 type RoomData = {
-  id: number
-  sessionId: number
+  _id: string
+  sessionId: string
   user1Id: number
   user2Id: number
   first_block: {
     reviewer1CompletionRate: number
     reviewer2CompletionRate: number
-    missingCompletionRate: number
     messages: [
       {
         id: number
@@ -39,7 +39,6 @@ type RoomData = {
   second_block: {
     reviewer1CompletionRate: number
     reviewer2CompletionRate: number
-    missingCompletionRate: number
     messages: [
       {
         id: number
@@ -67,16 +66,20 @@ const Room: FC = () => {
   const user2bg = useColorModeValue('blue.300', 'blue.900')
 
   useEffect(() => {
+    if (!router.isReady) return
+    if (!(sessionId && roomId)) return
+
     const getData = async () => {
-      setLoading(true)
       try {
-        const { data: response } = await axios.get(
-          `http://localhost:3005/sessions/${sessionId}/rooms/${roomId}`
-        )
-        setData(response)
-        setMessages(response.first_block.messages)
-      } catch (error: any) {
-        console.error(error.message)
+        setLoading(true)
+        const {
+          data: { data },
+        } = await axios.get(`/api/sessions/${sessionId}/rooms/${roomId}`)
+
+        setData(data)
+        setMessages(data.first_block.messages)
+      } catch (error) {
+        console.error(getErrorMessage(error))
       } finally {
         setLoading(false)
       }
