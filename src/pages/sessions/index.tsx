@@ -12,8 +12,6 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
-import LoadingSpinner from 'src/components/common/LoadingSpinner'
-import useFetch from 'src/hooks/useFetch'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
@@ -26,7 +24,9 @@ const SessionList: FC = (props) => {
 
   useEffect(() => {
     const getData = async () => {
-      const { data } = await axios.get(`http://localhost:3005/sessions`)
+      const {
+        data: { data },
+      } = await axios.get(`/api/sessions`)
       setData(data)
     }
 
@@ -59,9 +59,9 @@ const SessionList: FC = (props) => {
       </Heading>
 
       <VStack spacing={30} mt={5}>
-        {data.map((session) => (
+        {data.map((session: { _id: string; name: string }) => (
           <Box
-            key={session.id}
+            key={session._id}
             w="100%"
             h="70px"
             padding="10"
@@ -74,8 +74,8 @@ const SessionList: FC = (props) => {
               align="center"
               justify="space-between"
             >
-              <Text>Session {session.id}</Text>
-              <Button onClick={() => router.push(`/sessions/${session.id}`)}>
+              <Text>{session.name}</Text>
+              <Button onClick={() => router.push(`/sessions/${session._id}`)}>
                 Open
               </Button>
             </Flex>

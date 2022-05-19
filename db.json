@@ -13,13 +13,16 @@
   ],
   "sessions": [
     {
-      "id": 1
+      "id": 1,
+      "name": "Session 1"
     },
     {
-      "id": 2
+      "id": 2,
+      "name": "Session 2"
     },
     {
-      "id": 3
+      "id": 3,
+      "name": "Session 3"
     }
   ],
   "rooms": [
@@ -177,20 +180,13 @@
             "message": "Hola",
             "reviewerId": 1,
             "timestamp": "2021-12-10T10:21:05.059Z",
-            "labels": [
-              "S",
-              "U",
-              "D"
-            ]
+            "labels": ["S", "U", "D"]
           },
           {
             "message": "Chao",
             "reviewerId": 2,
             "timestamp": "2021-12-10T10:21:05.059Z",
-            "labels": [
-              "S",
-              "D"
-            ]
+            "labels": ["S", "D"]
           }
         ]
       }
