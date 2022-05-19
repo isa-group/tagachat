@@ -66,7 +66,7 @@ const Room: FC = () => {
   const saveResults = async () => {
     try {
       const response = await axios.patch(
-        `http://localhost:3005/sessions/${sessionId}/rooms/${roomId}`,
+        `/api/sessions/${sessionId}/rooms/${roomId}`,
         {
           first_block: {
             reviewer1CompletionRate: completionRate,
