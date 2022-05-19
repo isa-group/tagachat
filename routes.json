@@ -1,3 +1,0 @@
-{
-  "/sessions/:sessionId/rooms/:roomId": "/rooms/:roomId"
-}
