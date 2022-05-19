@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import SessionModal from 'src/components/sessions/SessionModal'
+import { UserRoles } from 'src/utils/enums/userRoles'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
@@ -42,8 +43,8 @@ const SessionList: FC = (props) => {
   useEffect(() => {
     if (
       !(
-        session?.user.role === 'admin' ||
-        session?.user.role === 'reviewer' ||
+        session?.user.role === UserRoles.REVIEWER ||
+        session?.user.role === UserRoles.ADMIN ||
         session?.user.isActive
       )
     ) {
