@@ -1,35 +1,43 @@
 export default function getRoomChats(dataset) {
-  var rooms = new Map()
+  const rooms = new Map()
 
-  for (var i = 0; i < dataset.participants.length; i++) {
-    const p = dataset.participants[i]
+  for (const participant of dataset.participants) {
+    let room = []
 
-    var room = []
-
-    if (rooms.has(p.room)) {
-      room = rooms.get(p.room)
+    if (rooms.has(participant.room)) {
+      room = rooms.get(participant.room)
     }
 
-    room.push(p.code)
-    rooms.set(p.room, room)
+    room.push(participant.code)
+    rooms.set(participant.room, room)
   }
 
-  var chats = new Map()
+  const chats = new Map()
 
-  for (let [key, value] of rooms) {
+  for (let [key, value] of rooms.entries()) {
     let p1 = value[0]
     let p2 = value[1]
 
-    var chat = dataset.logs
+    const filteredChat = dataset.logs
       .filter(
-        (l) => l.category == 'Chat' && (l.createdBy == p1 || l.createdBy == p2)
+        (log) =>
+          log.category == 'Chat' &&
+          (log.createdBy === p1 || log.createdBy === p2)
       )
-      .map((l) => {
-        return { by: l.createdBy, msg: l.payload, ts: l.timestamp }
-      })
+      .map((log) => ({
+        createdBy: log.createdBy,
+        message: log.payload,
+        timestamp: log.timestamp,
+      }))
 
-    chats.set(key, chat)
+    chats.set(key, filteredChat)
   }
 
-  return { rooms, chats }
+  const data = {
+    sessionName: dataset.session,
+    rooms,
+    chats,
+  }
+
+  return data
 }

@@ -51,7 +51,6 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
       )
       const data = await result.json()
       console.log(data)
-
       console.log(getRoomChats(data))
       setTwincodeData(data)
       toast({

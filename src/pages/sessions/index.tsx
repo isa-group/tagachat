@@ -15,10 +15,7 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
-<<<<<<< TASK-9-import-data-from-twincode
 import SessionModal from 'src/components/sessions/SessionModal'
-=======
->>>>>>> main
 import { UserRoles } from 'src/utils/enums/userRoles'
 
 const SessionList: FC = (props) => {
