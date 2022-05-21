@@ -21,7 +21,17 @@ import getTwincodeData from 'src/utils/getTwincodeData'
 import PasswordInput from '../auth/PasswordInput'
 import LoadingSpinner from '../common/LoadingSpinner'
 
-const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
+type SessionModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  setUpdateSessions: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const SessionModal = ({
+  isOpen,
+  onClose,
+  setUpdateSessions,
+}: SessionModalProps) => {
   const {
     register,
     handleSubmit,
@@ -31,15 +41,34 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
   const toast = useToast()
 
   const onSubmit: SubmitHandler<FieldValues> = async ({
-    session,
+    sessionName,
     username,
     password,
   }) => {
     try {
       setIsLoading(true)
 
+      const {
+        data: { data: sessions },
+      } = await axios.get('/api/sessions')
+
+      if (
+        sessions.find((session: { name: any }) => session.name === sessionName)
+      ) {
+        toast({
+          title: 'Error',
+          description: 'Session was already added',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        })
+
+        onClose()
+        return
+      }
+
       const { data } = await axios.get(
-        `https://twincode-data.herokuapp.com/api/v1/datasets/standard/${session}/full`,
+        `https://twincode-data.herokuapp.com/api/v1/datasets/standard/${sessionName}/full`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -52,16 +81,14 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
 
       const twincodeData = getTwincodeData(data)
 
-      console.log(twincodeData)
-
-      // Add session to DB
       await axios.post(`/api/sessions`, {
         name: twincodeData.sessionName,
       })
 
       await axios.post(`/api/rooms`, twincodeData.data)
 
-      // setTwincodeData(data)
+      setUpdateSessions(true)
+
       toast({
         title: 'Success',
         description: 'Session loaded successfully',
@@ -69,11 +96,12 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
         duration: 5000,
         isClosable: true,
       })
+
       onClose()
     } catch (error) {
       toast({
-        title: (error as Error).message,
-        description: 'Session could not be loaded',
+        title: 'Error',
+        description: (error as Error).message,
         status: 'error',
         duration: 6000,
         isClosable: true,
@@ -95,18 +123,20 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
           <ModalBody>
             <form id="sessionform" onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={6}>
-                <FormControl id="session" isInvalid={!!errors.session}>
+                <FormControl id="sessionName" isInvalid={!!errors.sessionName}>
                   <FormLabel>Session name</FormLabel>
                   <Input
                     type="text"
-                    {...register('session', {
+                    {...register('sessionName', {
                       required: {
                         value: true,
                         message: 'Please enter a twincode session name',
                       },
                     })}
                   />
-                  <FormErrorMessage>{errors.session?.message}</FormErrorMessage>
+                  <FormErrorMessage>
+                    {errors.sessionName?.message}
+                  </FormErrorMessage>
                 </FormControl>
 
                 <FormControl id="username" isInvalid={!!errors.username}>

@@ -27,7 +27,7 @@ const SessionList: FC = (props) => {
   const { data: session } = useSession()
 
   const [data, setData] = useState([])
-  const [twincodeData, setTwincodeData] = useState([])
+  const [updateSessions, setUpdateSessions] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
@@ -35,10 +35,11 @@ const SessionList: FC = (props) => {
         data: { data },
       } = await axios.get(`/api/sessions`)
       setData(data)
+      setUpdateSessions(false)
     }
 
     getData()
-  }, [])
+  }, [updateSessions])
 
   useEffect(() => {
     if (
@@ -76,7 +77,7 @@ const SessionList: FC = (props) => {
       <SessionModal
         isOpen={isOpen}
         onClose={onClose}
-        setTwincodeData={setTwincodeData}
+        setUpdateSessions={setUpdateSessions}
       />
 
       <VStack spacing={30} mt={5}>
