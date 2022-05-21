@@ -17,7 +17,7 @@ import {
 import axios from 'axios'
 import { useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import getRoomChats from 'src/utils/getRoomChats'
+import getTwincodeData from 'src/utils/getTwincodeData'
 import PasswordInput from '../auth/PasswordInput'
 import LoadingSpinner from '../common/LoadingSpinner'
 
@@ -50,14 +50,16 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
         }
       )
 
-      const rooms = getRoomChats(data)
+      const twincodeData = getTwincodeData(data)
 
-      console.log(rooms)
+      console.log(twincodeData)
 
       // Add session to DB
-      const addSessionToDB = await axios.post(`/api/sessions`, {
-        name: rooms.sessionName,
+      await axios.post(`/api/sessions`, {
+        name: twincodeData.sessionName,
       })
+
+      await axios.post(`/api/rooms`, twincodeData.data)
 
       // setTwincodeData(data)
       toast({

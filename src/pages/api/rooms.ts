@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import getRooms from 'src/api/rooms/getRooms'
+import addRooms from 'src/api/rooms/addRooms'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  switch (req.method) {
-    case 'GET': {
-      return getRooms(req, res)
-    }
+  if (req.method === 'POST') {
+    return addRooms(req, res)
   }
 }
 
