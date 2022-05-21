@@ -1,6 +1,6 @@
 type ParticipantData = { code: string; room: number }
 
-function getRoomData(participants: ParticipantData[]) {
+function getRooms(participants: ParticipantData[]) {
   const rooms = new Map()
 
   for (const { room, code } of participants) {
@@ -15,13 +15,13 @@ function getRoomData(participants: ParticipantData[]) {
   return rooms
 }
 
-function getChatData(rooms: Map<any, any>, logs: any[]) {
+function getChats(rooms: Map<any, any>, logs: any[]) {
   const chats = new Map()
 
   for (let [key, participants] of rooms) {
     const [participant1, participant2] = participants
 
-    const filteredChat = logs
+    const filteredChats = logs
       .filter(
         (log) =>
           log.category == 'Chat' &&
@@ -35,28 +35,48 @@ function getChatData(rooms: Map<any, any>, logs: any[]) {
 
     chats.set(
       {
-        room: key,
-        participant1code: participant1,
-        participant2code: participant2,
+        roomCode: key,
+        participant1Code: participant1,
+        participant2Code: participant2,
       },
-      filteredChat
+      filteredChats
     )
   }
 
   return chats
 }
 
-export default function getRoomChats(dataset: {
+function cleanData(chats: Map<any, any>, sessionName: any) {
+  const cleanData = []
+
+  for (let [key, value] of chats) {
+    if (!key.roomCode) continue
+    if (!(key.participant1Code && key.participant2Code)) continue
+    if (value.length === 0) continue
+
+    const room = {
+      ...key,
+      sessionName,
+      messages: value,
+    }
+
+    cleanData.push(room)
+  }
+
+  return cleanData
+}
+
+export default function getTwincodeData(dataset: {
   participants: ParticipantData[]
   logs: any[]
   session: any
 }) {
-  const rooms = getRoomData(dataset.participants)
-
-  const data = getChatData(rooms, dataset.logs)
+  const rooms = getRooms(dataset.participants)
+  const chats = getChats(rooms, dataset.logs)
+  const cleanedData = cleanData(chats, dataset.session)
 
   return {
     sessionName: dataset.session,
-    data,
+    data: cleanedData,
   }
 }
