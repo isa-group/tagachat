@@ -20,7 +20,7 @@ import { getErrorMessage } from 'src/utils/getErrorMessage'
 
 const Room: FC = () => {
   const router = useRouter()
-  const { sessionId, roomId } = router.query
+  const { sessionName, roomCode } = router.query
 
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<Room>()
@@ -34,17 +34,17 @@ const Room: FC = () => {
 
   useEffect(() => {
     if (!router.isReady) return
-    if (!(sessionId && roomId)) return
+    if (!(sessionName && roomCode)) return
 
     const getData = async () => {
       try {
         setLoading(true)
         const {
           data: { data },
-        } = await axios.get(`/api/sessions/${sessionId}/rooms/${roomId}`)
+        } = await axios.get(`/api/sessions/${sessionName}/rooms/${roomCode}`)
 
         setData(data)
-        setMessages(data.first_block.messages)
+        setMessages(data.messages)
       } catch (error) {
         console.error(getErrorMessage(error))
       } finally {
@@ -53,11 +53,11 @@ const Room: FC = () => {
     }
 
     getData()
-  }, [router.isReady, roomId, sessionId])
+  }, [router.isReady, roomCode, sessionName])
 
   useEffect(() => {
     if (data) {
-      const dataLength = data?.first_block?.messages.length
+      const dataLength = data?.messages.length
       const responseLength = messages.length
       setCompletionRate(Math.round((responseLength / dataLength) * 100))
     }
@@ -66,14 +66,9 @@ const Room: FC = () => {
   const saveResults = async () => {
     try {
       const response = await axios.patch(
-        `/api/sessions/${sessionId}/rooms/${roomId}`,
+        `/api/sessions/${sessionName}/rooms/${roomCode}`,
         {
-          first_block: {
-            reviewer1CompletionRate: completionRate,
-            reviewer2CompletionRate: 0,
-            missingCompletionRate: 100 - completionRate,
-            messages: messages,
-          },
+          messages,
         }
       )
       return response
@@ -98,14 +93,14 @@ const Room: FC = () => {
             top: '0',
           }}
         >
-          <Heading>Room {roomId} - first block</Heading>
+          <Heading>Room {roomCode} - first block</Heading>
           <Spacer />
           <Flex direction="row" align="center" justify="center" gap="30px">
             <Box bg={user1bg} padding="2" rounded="10">
-              <Text>User ID: {data?.user1Id}</Text>
+              <Text>Participant ID: {data?.participant1Code}</Text>
             </Box>
             <Box bg={user2bg} padding="2" rounded="10">
-              <Text>User ID: {data?.user2Id}</Text>
+              <Text>Participant ID: {data?.participant2Code}</Text>
             </Box>
           </Flex>
           <Spacer />
@@ -118,12 +113,12 @@ const Room: FC = () => {
         </Flex>
 
         <VStack spacing="20px" mt={5}>
-          {data?.first_block.messages.map((message) => (
+          {data?.messages.map((message, index) => (
             <Message
-              key={message.id}
+              key={index}
               setTags={setMessages}
               backgroundColor={
-                data?.user1Id === message.userId ? user1bg : user2bg
+                data?.participant1Code === message.createdBy ? user1bg : user2bg
               }
               {...message}
             />
