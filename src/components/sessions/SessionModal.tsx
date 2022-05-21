@@ -14,6 +14,7 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react'
+import axios from 'axios'
 import { useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import getRoomChats from 'src/utils/getRoomChats'
@@ -37,10 +38,9 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
     try {
       setIsLoading(true)
 
-      const result = await fetch(
+      const { data } = await axios.get(
         `https://twincode-data.herokuapp.com/api/v1/datasets/standard/${session}/full`,
         {
-          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             Authorization:
@@ -49,10 +49,17 @@ const SessionModal = ({ isOpen, onClose, setTwincodeData }) => {
           },
         }
       )
-      const data = await result.json()
-      console.log(data)
-      console.log(getRoomChats(data))
-      setTwincodeData(data)
+
+      const rooms = getRoomChats(data)
+
+      console.log(rooms)
+
+      // Add session to DB
+      const addSessionToDB = await axios.post(`/api/sessions`, {
+        name: rooms.sessionName,
+      })
+
+      // setTwincodeData(data)
       toast({
         title: 'Success',
         description: 'Session loaded successfully',
