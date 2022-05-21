@@ -6,6 +6,7 @@ async function getSessions(req: NextApiRequest, res: NextApiResponse) {
   try {
     const client = await clientPromise
     const db = client.db()
+
     const sessions = await db.collection('sessions').find().toArray()
 
     return res.status(200).json({

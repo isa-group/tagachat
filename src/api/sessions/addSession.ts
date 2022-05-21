@@ -7,8 +7,6 @@ async function addSession(req: NextApiRequest, res: NextApiResponse) {
     const client = await clientPromise
     const db = client.db()
 
-    console.log(req.body)
-
     await db.collection('sessions').insertOne(req.body)
 
     return res.status(200).json({
