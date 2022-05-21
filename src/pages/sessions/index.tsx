@@ -3,8 +3,11 @@ import {
   Button,
   Flex,
   Heading,
+  HStack,
+  Spacer,
   Text,
   useColorModeValue,
+  useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react'
@@ -12,16 +15,22 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
+import LoadingSpinner from 'src/components/common/LoadingSpinner'
+import SessionModal from 'src/components/sessions/SessionModal'
 import { UserRoles } from 'src/utils/enums/userRoles'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
   const bg = useColorModeValue('gray.50', 'gray.700')
   const toast = useToast()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const [isLoading, setIsLoading] = useState(true)
 
   const { data: session } = useSession()
 
   const [data, setData] = useState([])
+  const [updateSessions, setUpdateSessions] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
@@ -29,12 +38,16 @@ const SessionList: FC = (props) => {
         data: { data },
       } = await axios.get(`/api/sessions`)
       setData(data)
+      setUpdateSessions(false)
+      setIsLoading(false)
     }
 
     getData()
-  }, [])
+  }, [updateSessions])
 
   useEffect(() => {
+    if (!session) return
+
     if (
       !(
         session?.user.role === UserRoles.REVIEWER ||
@@ -50,14 +63,31 @@ const SessionList: FC = (props) => {
         isClosable: true,
       })
       router.push('/')
+      setIsLoading(false)
     }
   }, [router, session, toast])
 
+  if (isLoading) return <LoadingSpinner loading={isLoading} />
+
   return (
     <Box padding="8">
-      <Heading as="h1" size="lg">
-        Sessions
-      </Heading>
+      <HStack>
+        <Heading as="h1" size="lg">
+          Sessions
+        </Heading>
+
+        <Spacer />
+
+        <Button onClick={onOpen}>
+          <Text>Import Session</Text>
+        </Button>
+      </HStack>
+
+      <SessionModal
+        isOpen={isOpen}
+        onClose={onClose}
+        setUpdateSessions={setUpdateSessions}
+      />
 
       <VStack spacing={30} mt={5}>
         {data.map((session: { _id: string; name: string }) => (
@@ -76,7 +106,7 @@ const SessionList: FC = (props) => {
               justify="space-between"
             >
               <Text>{session.name}</Text>
-              <Button onClick={() => router.push(`/sessions/${session._id}`)}>
+              <Button onClick={() => router.push(`/sessions/${session.name}`)}>
                 Open
               </Button>
             </Flex>

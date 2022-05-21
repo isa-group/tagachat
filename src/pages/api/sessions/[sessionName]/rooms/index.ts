@@ -6,12 +6,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     case 'GET': {
       return getRooms(req, res)
     }
-
-    case 'PUT': {
-    }
-
-    case 'DELETE': {
-    }
   }
 }
 
