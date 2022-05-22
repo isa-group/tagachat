@@ -5,7 +5,7 @@ import { IMessage } from 'src/types/message.type'
 import { tagsDT, tagsFI } from 'src/types/tags.type'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
-import { RadioCard } from '../common/RadioCard'
+import RadioCard from '../common/RadioCard'
 
 type MessageProps = {
   backgroundColor: string
@@ -84,9 +84,11 @@ const Message = ({
           spacing="0"
         >
           {tagFIOptions.map((value) => (
-            <RadioCard key={value} {...getRadioFIProps({ value })}>
-              {value}
-            </RadioCard>
+            <RadioCard
+              key={value}
+              tag={value}
+              {...getRadioFIProps({ value })}
+            />
           ))}
         </Stack>
 
@@ -96,9 +98,11 @@ const Message = ({
           spacing="0"
         >
           {tagDTOptions.map((value) => (
-            <RadioCard key={value} {...getRadioDTProps({ value })}>
-              {value}
-            </RadioCard>
+            <RadioCard
+              key={value}
+              tag={value}
+              {...getRadioDTProps({ value })}
+            />
           ))}
         </Stack>
       </Flex>
