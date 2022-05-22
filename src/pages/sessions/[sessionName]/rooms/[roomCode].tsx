@@ -8,43 +8,48 @@ import {
   Spacer,
   useColorModeValue,
   VStack,
-  Button,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
-import { Room } from 'src/types/room.type'
+import { IMessage } from 'src/types/message.type'
+import { IRoom } from 'src/types/room.type'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 
 const Room: FC = () => {
   const router = useRouter()
   const { sessionName, roomCode } = router.query
 
-  const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<Room>()
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState<IRoom>()
+  const [taggedMessages, setTaggedMessages] = useState<IMessage[]>([])
 
   const [completionRate, setCompletionRate] = useState(0)
-  const [messages, setMessages] = useState([])
 
   const bg = useColorModeValue('white', 'gray.800')
   const user1bg = useColorModeValue('gray.100', 'gray.600')
   const user2bg = useColorModeValue('blue.300', 'blue.900')
 
   useEffect(() => {
-    if (!router.isReady) return
-    if (!(sessionName && roomCode)) return
+    if (!(roomCode && sessionName)) return
 
     const getData = async () => {
       try {
         setLoading(true)
+
         const {
           data: { data },
         } = await axios.get(`/api/sessions/${sessionName}/rooms/${roomCode}`)
 
         setData(data)
-        setMessages(data.messages)
+
+        if (data.messages) {
+          setTaggedMessages(
+            data?.messages.filter((m: IMessage) => m.tagFI && m.tagDT)
+          )
+        }
       } catch (error) {
         console.error(getErrorMessage(error))
       } finally {
@@ -53,29 +58,16 @@ const Room: FC = () => {
     }
 
     getData()
-  }, [router.isReady, roomCode, sessionName])
+  }, [roomCode, sessionName])
 
   useEffect(() => {
-    if (data) {
-      const dataLength = data?.messages.length
-      const responseLength = messages.length
-      setCompletionRate(Math.round((responseLength / dataLength) * 100))
-    }
-  }, [data, messages])
+    if (!data) return
 
-  const saveResults = async () => {
-    try {
-      const response = await axios.patch(
-        `/api/sessions/${sessionName}/rooms/${roomCode}`,
-        {
-          messages,
-        }
-      )
-      return response
-    } catch (error) {
-      console.error(error)
-    }
-  }
+    const dataLength = data?.messages.length
+    const taggedMessagesLength = taggedMessages?.length ?? 0
+
+    setCompletionRate(Math.round((taggedMessagesLength / dataLength) * 100))
+  }, [data, taggedMessages?.length])
 
   if (loading) return <LoadingSpinner loading={loading} />
 
@@ -93,7 +85,7 @@ const Room: FC = () => {
             top: '0',
           }}
         >
-          <Heading>Room {roomCode} - first block</Heading>
+          <Heading>Room {roomCode}</Heading>
           <Spacer />
           <Flex direction="row" align="center" justify="center" gap="30px">
             <Box bg={user1bg} padding="2" rounded="10">
@@ -107,20 +99,19 @@ const Room: FC = () => {
           <CircularProgress value={completionRate} size="70px">
             <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
           </CircularProgress>
-          <Button ml={6} onClick={saveResults} colorScheme="blue">
-            Save
-          </Button>
         </Flex>
 
         <VStack spacing="20px" mt={5}>
-          {data?.messages.map((message, index) => (
+          {data?.messages.map((message) => (
             <Message
-              key={index}
-              setTags={setMessages}
+              key={message.id}
+              message={message}
+              sessionName={sessionName}
+              roomCode={roomCode}
+              setTaggedMessages={setTaggedMessages}
               backgroundColor={
                 data?.participant1Code === message.createdBy ? user1bg : user2bg
               }
-              {...message}
             />
           ))}
         </VStack>

@@ -1,61 +1,68 @@
 import { Box, Flex, Spacer, Stack, Text, useRadioGroup } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { IMessage } from 'src/types/message.type'
+import { tagsDT, tagsFI } from 'src/types/tags.type'
+import { getErrorMessage } from 'src/utils/getErrorMessage'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import { RadioCard } from '../common/RadioCard'
 
 type MessageProps = {
-  id: number
   backgroundColor: string
-  message: string
-  tagFI: string
-  tagDT: string
-  userId: number
-  setTags: (tags: string[]) => void
+  sessionName: string | string[] | undefined
+  roomCode: string | string[] | undefined
+  message: IMessage
+  setTaggedMessages: Dispatch<SetStateAction<IMessage[]>>
 }
 
 const Message = ({
-  id,
   backgroundColor,
+  sessionName,
+  roomCode,
   message,
-  userId,
-  setTags,
-  tagFI,
-  tagDT,
+  setTaggedMessages,
 }: MessageProps) => {
-  const [selectedTags, setSelectedTags] = useState({
-    id,
-    userId,
-    message,
-    tagFI: tagFI ? tagFI : '',
-    tagDT: tagDT ? tagDT : '',
-  })
-
-  useEffect(() => {
-    if (selectedTags.tagFI === '' || selectedTags.tagDT === '') return
-
-    setTags((tags) => [
-      ...tags.filter((tag) => tag.id !== selectedTags.id),
-      { ...selectedTags },
-    ])
-  }, [id, selectedTags, setTags])
+  const [tempFI, setTempFI] = useState<tagsFI>()
+  const [tempDT, setTempDT] = useState<tagsDT>()
 
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
       name: 'tagsFI',
-      defaultValue: tagFI,
-      onChange: (tag) => {
-        setSelectedTags((tags) => ({ ...tags, tagFI: tag }))
-      },
+      defaultValue: message?.tagFI,
+      onChange: (tag) => setTempFI(tag),
     })
 
   const { getRootProps: getRootDTProps, getRadioProps: getRadioDTProps } =
     useRadioGroup({
       name: 'tagsDT',
-      defaultValue: tagDT,
-      onChange: (tag) => {
-        setSelectedTags((tags) => ({ ...tags, tagDT: tag }))
-      },
+      defaultValue: message?.tagDT,
+      onChange: (tag) => setTempDT(tag),
     })
+
+  useEffect(() => {
+    if (!(tempFI && tempDT)) return
+
+    async function checkIfTagged() {
+      try {
+        const taggedMessage = { ...message, tagFI: tempFI, tagDT: tempDT }
+
+        await axios.patch(`/api/sessions/${sessionName}/rooms/${roomCode}`, {
+          taggedMessage,
+        })
+
+        setTaggedMessages((prevTaggedMessages) => [
+          ...prevTaggedMessages.filter(
+            (taggedMsg) => taggedMsg.id !== taggedMessage.id
+          ),
+          taggedMessage,
+        ])
+      } catch (error) {
+        console.error(getErrorMessage(error))
+      }
+    }
+
+    checkIfTagged()
+  }, [message, roomCode, sessionName, setTaggedMessages, tempDT, tempFI])
 
   return (
     <Box
@@ -67,7 +74,7 @@ const Message = ({
       rounded="10"
     >
       <Flex height="100%" direction="row" align="center" gap="25px">
-        <Text>{message}</Text>
+        <Text>{message.message}</Text>
 
         <Spacer />
 
