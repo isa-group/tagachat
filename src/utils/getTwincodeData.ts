@@ -27,7 +27,8 @@ function getChats(rooms: Map<any, any>, logs: any[]) {
           log.category == 'Chat' &&
           (log.createdBy === participant1 || log.createdBy === participant2)
       )
-      .map((log) => ({
+      .map((log, idx) => ({
+        id: idx,
         createdBy: log.createdBy,
         message: log.payload,
         timestamp: log.timestamp,

@@ -8,6 +8,7 @@ export type Room = {
   participant2Code: string
   messages: [
     {
+      id: number
       createdBy: string
       message: string
       timestamp: string
