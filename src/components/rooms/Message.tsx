@@ -46,10 +46,20 @@ const Message = ({
 
     async function checkIfTagged() {
       try {
+        const {
+          data: {
+            data: { messages },
+          },
+        } = await axios.get(`/api/sessions/${sessionName}/rooms/${roomCode}`)
+
+        const latestMessage = messages.find(
+          (m: { id: number }) => m.id === message.id
+        )
+
         const taggedMessage = {
-          ...message,
+          ...latestMessage,
           tags: {
-            ...message.tags,
+            ...latestMessage.tags,
             [userEmail]: {
               tagFI: tempFI,
               tagDT: tempDT,
