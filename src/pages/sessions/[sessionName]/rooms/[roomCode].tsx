@@ -44,7 +44,10 @@ const Room: FC = () => {
         } = await axios.get(`/api/sessions/${sessionName}/rooms/${roomCode}`)
 
         data.messages.sort(
-          (a, b) => new Date(b.timestamp) < new Date(a.timestamp)
+          (
+            a: { timestamp: string | number | Date },
+            b: { timestamp: string | number | Date }
+          ) => new Date(b.timestamp) < new Date(a.timestamp)
         )
 
         setData(data)
@@ -84,7 +87,7 @@ const Room: FC = () => {
             top: '0',
           }}
         >
-          <Heading>Room {roomCode} - first block</Heading>
+          <Heading>Room {roomCode}</Heading>
           <Spacer />
           <Flex direction="row" align="center" justify="center" gap="30px">
             <Box bg={user1bg} padding="2" rounded="10">

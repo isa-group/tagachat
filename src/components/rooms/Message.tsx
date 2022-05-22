@@ -7,8 +7,8 @@ import { RadioCard } from '../common/RadioCard'
 
 type MessageProps = {
   backgroundColor: string
-  sessionName: string
-  roomCode: string
+  sessionName: string | string[] | undefined
+  roomCode: string | string[] | undefined
   id: number
   message: string
   timestamp: string
@@ -36,8 +36,6 @@ const Message = ({
     tagFI: tagFI || '',
     tagDT: tagDT || '',
   })
-
-  const [loading, setLoading] = useState(false)
 
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
