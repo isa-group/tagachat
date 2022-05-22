@@ -1,7 +1,7 @@
 import {
   Box,
-  Flex,
   Heading,
+  HStack,
   Text,
   useColorModeValue,
   VStack,
@@ -10,16 +10,17 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
+import { IRoom } from 'src/types/room.type'
 
 const Session = () => {
   const router = useRouter()
   const { sessionName } = router.query
-  const [isLoading, setIsLoading] = useState(true)
 
   const bg = useColorModeValue('gray.50', 'gray.700')
   const bgOnHover = useColorModeValue('gray.200', 'blue.800')
 
-  const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState<IRoom[]>([])
 
   useEffect(() => {
     if (!router.isReady) return
@@ -41,50 +42,63 @@ const Session = () => {
     <Box padding="8">
       <Heading>Session: {sessionName}</Heading>
 
-      <VStack spacing={30} mt={5}>
-        <Box w="100%" h="70px" padding="10" rounded="10">
-          <Flex
-            height="100%"
-            direction="row"
-            align="center"
+      <VStack spacing="10px" mt="40px">
+        <HStack spacing="18rem" w="100%" padding="30px">
+          <Heading size="lg">Room</Heading>
+          <Heading size="lg">Block 1</Heading>
+          <Heading size="lg">Block 2</Heading>
+        </HStack>
+
+        {data.map((room) => (
+          <HStack
+            key={room._id}
+            spacing={20}
+            w="100%"
+            padding="30px"
             justify="space-between"
           >
-            <Heading size="lg">Room</Heading>
-            <Heading size="lg">Block 1</Heading>
-            <Heading size="lg">Block 2</Heading>
-          </Flex>
-        </Box>
-
-        {data.map((room: { _id: string; roomCode: number }) => (
-          <Box
-            key={room._id}
-            w="100%"
-            h="150px"
-            padding="10"
-            bg={bg}
-            rounded="10"
-            onClick={() =>
-              router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
-            }
-            _hover={{
-              bg: bgOnHover,
-              cursor: 'pointer',
-            }}
-          >
-            <Flex
-              height="100%"
-              direction="row"
-              align="center"
-              justify="space-between"
-              grow="1"
-              shrink="1"
-              basis="0"
+            <Heading size="md">{room.roomCode}</Heading>
+            <Box
+              w="100%"
+              padding="10"
+              bg={bg}
+              boxShadow={'md'}
+              rounded={'lg'}
+              onClick={() =>
+                router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
+              }
+              transition="all 0.2s"
+              _hover={{
+                bg: bgOnHover,
+                cursor: 'pointer',
+                boxShadow: 'xl',
+              }}
             >
-              <div>
-                <Text size="lg">{room.roomCode}</Text>
-              </div>
-            </Flex>
-          </Box>
+              <Text>
+                <strong>Room Code:</strong> {room.roomCode}
+              </Text>
+            </Box>
+            <Box
+              w="100%"
+              padding="10"
+              bg={bg}
+              boxShadow={'md'}
+              rounded={'lg'}
+              onClick={() =>
+                router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
+              }
+              transition="all 0.2s"
+              _hover={{
+                bg: bgOnHover,
+                cursor: 'pointer',
+                boxShadow: 'xl',
+              }}
+            >
+              <Text>
+                <strong>Here goes second block logic</strong>
+              </Text>
+            </Box>
+          </HStack>
         ))}
       </VStack>
     </Box>
