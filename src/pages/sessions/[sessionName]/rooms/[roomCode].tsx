@@ -33,6 +33,7 @@ const Room: FC = () => {
   const [completionRate, setCompletionRate] = useState(0)
 
   const { data: session } = useSession()
+  const [currentUserMail, setCurrentUserMail] = useState('')
 
   const bg = useColorModeValue('white', 'gray.800')
   const user1bg = useColorModeValue('gray.100', 'gray.600')
@@ -45,6 +46,8 @@ const Room: FC = () => {
     const { email, isActive } = session.user
 
     if (!email) return
+
+    setCurrentUserMail(email)
 
     if (!isActive) {
       toast({
@@ -128,7 +131,7 @@ const Room: FC = () => {
             <Message
               key={message.id}
               message={message}
-              userEmail={session?.user.email}
+              userEmail={currentUserMail}
               sessionName={sessionName}
               roomCode={roomCode}
               setTaggedMessages={setTaggedMessages}
