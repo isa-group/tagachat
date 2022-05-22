@@ -1,19 +1,10 @@
-import { tagsDT, tagsFI } from './tags.type'
+import { IMessage } from './message.type'
 
-export type Room = {
+export type IRoom = {
   _id: string
   sessionName: string
   roomCode: number
   participant1Code: string
   participant2Code: string
-  messages: [
-    {
-      id: number
-      createdBy: string
-      message: string
-      timestamp: string
-      tagFI: tagsFI
-      tagDT: tagsDT
-    }
-  ]
+  messages: IMessage[]
 }
