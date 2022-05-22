@@ -1,5 +1,7 @@
 import {
   Box,
+  Grid,
+  GridItem,
   Heading,
   HStack,
   Text,
@@ -42,65 +44,74 @@ const Session = () => {
     <Box padding="8">
       <Heading>Session: {sessionName}</Heading>
 
-      <VStack spacing="10px" mt="40px">
-        <HStack spacing="18rem" w="100%" padding="30px">
+      <Grid
+        mt="40px"
+        templateColumns="repeat(5, 1fr)"
+        columnGap={8}
+        rowGap={12}
+      >
+        <GridItem colSpan={1} m="auto">
           <Heading size="lg">Room</Heading>
+        </GridItem>
+        <GridItem colSpan={2} m="auto">
           <Heading size="lg">Block 1</Heading>
+        </GridItem>
+        <GridItem colSpan={2} m="auto">
           <Heading size="lg">Block 2</Heading>
-        </HStack>
+        </GridItem>
 
         {data.map((room) => (
-          <HStack
-            key={room._id}
-            spacing={20}
-            w="100%"
-            padding="30px"
-            justify="space-between"
-          >
-            <Heading size="md">{room.roomCode}</Heading>
-            <Box
-              w="100%"
-              padding="10"
-              bg={bg}
-              boxShadow={'md'}
-              rounded={'lg'}
-              onClick={() =>
-                router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
-              }
-              transition="all 0.2s"
-              _hover={{
-                bg: bgOnHover,
-                cursor: 'pointer',
-                boxShadow: 'xl',
-              }}
-            >
-              <Text>
-                <strong>Room Code:</strong> {room.roomCode}
-              </Text>
-            </Box>
-            <Box
-              w="100%"
-              padding="10"
-              bg={bg}
-              boxShadow={'md'}
-              rounded={'lg'}
-              onClick={() =>
-                router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
-              }
-              transition="all 0.2s"
-              _hover={{
-                bg: bgOnHover,
-                cursor: 'pointer',
-                boxShadow: 'xl',
-              }}
-            >
-              <Text>
-                <strong>Here goes second block logic</strong>
-              </Text>
-            </Box>
-          </HStack>
+          <>
+            <GridItem colSpan={1} m="auto">
+              <Heading size="md">{room.roomCode}</Heading>
+            </GridItem>
+
+            <GridItem colSpan={2}>
+              <Box
+                padding="10"
+                bg={bg}
+                boxShadow={'md'}
+                rounded={'lg'}
+                onClick={() =>
+                  router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
+                }
+                transition="all 0.2s"
+                _hover={{
+                  bg: bgOnHover,
+                  cursor: 'pointer',
+                  boxShadow: 'xl',
+                }}
+              >
+                <Text>
+                  <strong>Room Code:</strong> {room.roomCode}
+                </Text>
+              </Box>
+            </GridItem>
+
+            <GridItem colSpan={2}>
+              <Box
+                padding="10"
+                bg={bg}
+                boxShadow={'md'}
+                rounded={'lg'}
+                onClick={() =>
+                  router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
+                }
+                transition="all 0.2s"
+                _hover={{
+                  bg: bgOnHover,
+                  cursor: 'pointer',
+                  boxShadow: 'xl',
+                }}
+              >
+                <Text>
+                  <strong>Here goes second block logic</strong>
+                </Text>
+              </Box>
+            </GridItem>
+          </>
         ))}
-      </VStack>
+      </Grid>
     </Box>
   )
 }
