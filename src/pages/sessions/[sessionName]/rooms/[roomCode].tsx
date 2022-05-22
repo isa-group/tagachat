@@ -26,7 +26,6 @@ const Room: FC = () => {
   const [data, setData] = useState<Room>()
 
   const [completionRate, setCompletionRate] = useState(0)
-  const [messages, setMessages] = useState([])
 
   const bg = useColorModeValue('white', 'gray.800')
   const user1bg = useColorModeValue('gray.100', 'gray.600')
@@ -39,12 +38,16 @@ const Room: FC = () => {
     const getData = async () => {
       try {
         setLoading(true)
+
         const {
           data: { data },
         } = await axios.get(`/api/sessions/${sessionName}/rooms/${roomCode}`)
 
+        data.messages.sort(
+          (a, b) => new Date(b.timestamp) < new Date(a.timestamp)
+        )
+
         setData(data)
-        setMessages(data.messages)
       } catch (error) {
         console.error(getErrorMessage(error))
       } finally {
@@ -56,26 +59,14 @@ const Room: FC = () => {
   }, [router.isReady, roomCode, sessionName])
 
   useEffect(() => {
-    if (data) {
-      const dataLength = data?.messages.length
-      const responseLength = messages.length
-      setCompletionRate(Math.round((responseLength / dataLength) * 100))
-    }
-  }, [data, messages])
+    if (!data) return
 
-  const saveResults = async () => {
-    try {
-      const response = await axios.patch(
-        `/api/sessions/${sessionName}/rooms/${roomCode}`,
-        {
-          messages,
-        }
-      )
-      return response
-    } catch (error) {
-      console.error(error)
-    }
-  }
+    const dataLength = data?.messages.length
+    const responseLength = data?.messages.filter(
+      (m) => m.tagFI && m.tagDT
+    ).length
+    setCompletionRate(Math.round((responseLength / dataLength) * 100))
+  }, [data])
 
   if (loading) return <LoadingSpinner loading={loading} />
 
@@ -107,16 +98,14 @@ const Room: FC = () => {
           <CircularProgress value={completionRate} size="70px">
             <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
           </CircularProgress>
-          <Button ml={6} onClick={saveResults} colorScheme="blue">
-            Save
-          </Button>
         </Flex>
 
         <VStack spacing="20px" mt={5}>
-          {data?.messages.map((message, index) => (
+          {data?.messages.map((message) => (
             <Message
-              key={index}
-              setTags={setMessages}
+              key={message.id}
+              sessionName={sessionName}
+              roomCode={roomCode}
               backgroundColor={
                 data?.participant1Code === message.createdBy ? user1bg : user2bg
               }

@@ -18,10 +18,15 @@ async function updateRoom(req: NextApiRequest, res: NextApiResponse) {
     await db.collection('rooms').updateOne(
       {
         sessionName,
-        roomCode,
+        roomCode: parseInt(roomCode),
       },
       {
-        $set: req.body,
+        $set: {
+          'messages.$[message]': req.body.taggedMessage,
+        },
+      },
+      {
+        arrayFilters: [{ 'message.id': req.body.taggedMessage.id }],
       }
     )
 
