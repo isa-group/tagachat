@@ -1,6 +1,8 @@
 import { Box, Flex, Spacer, Stack, Text, useRadioGroup } from '@chakra-ui/react'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { IMessage } from 'src/types/message.type'
+import { tagsDT, tagsFI } from 'src/types/tags.type'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import { RadioCard } from '../common/RadioCard'
@@ -9,69 +11,58 @@ type MessageProps = {
   backgroundColor: string
   sessionName: string | string[] | undefined
   roomCode: string | string[] | undefined
-  id: number
-  message: string
-  timestamp: string
-  createdBy: string
-  tagFI: string
-  tagDT: string
+  message: IMessage
+  setTaggedMessages: Dispatch<SetStateAction<IMessage[]>>
 }
 
 const Message = ({
   backgroundColor,
   sessionName,
   roomCode,
-  id,
-  createdBy,
   message,
-  timestamp,
-  tagFI,
-  tagDT,
+  setTaggedMessages,
 }: MessageProps) => {
-  const [taggedMessage, setTaggedMessage] = useState({
-    id,
-    createdBy,
-    message,
-    timestamp,
-    tagFI: tagFI || '',
-    tagDT: tagDT || '',
-  })
+  const [tempFI, setTempFI] = useState<tagsFI>()
+  const [tempDT, setTempDT] = useState<tagsDT>()
 
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
       name: 'tagsFI',
-      defaultValue: tagFI,
-      onChange: (tag) => {
-        setTaggedMessage((tags) => ({ ...tags, tagFI: tag }))
-      },
+      defaultValue: message?.tagFI,
+      onChange: (tag) => setTempFI(tag),
     })
 
   const { getRootProps: getRootDTProps, getRadioProps: getRadioDTProps } =
     useRadioGroup({
       name: 'tagsDT',
-      defaultValue: tagDT,
-      onChange: (tag) => {
-        setTaggedMessage((tags) => ({ ...tags, tagDT: tag }))
-      },
+      defaultValue: message?.tagDT,
+      onChange: (tag) => setTempDT(tag),
     })
 
   useEffect(() => {
-    if (!(sessionName && roomCode)) return
+    if (!(tempFI && tempDT)) return
 
-    if (taggedMessage.tagFI === '' || taggedMessage.tagDT === '') return
-
-    const updateRoom = async () => {
+    async function checkIfTagged() {
       try {
+        const taggedMessage = { ...message, tagFI: tempFI, tagDT: tempDT }
+
         await axios.patch(`/api/sessions/${sessionName}/rooms/${roomCode}`, {
           taggedMessage,
         })
+
+        setTaggedMessages((prevTaggedMessages) => [
+          ...prevTaggedMessages.filter(
+            (taggedMsg) => taggedMsg.id !== taggedMessage.id
+          ),
+          taggedMessage,
+        ])
       } catch (error) {
         console.error(getErrorMessage(error))
       }
     }
 
-    updateRoom()
-  }, [roomCode, sessionName, taggedMessage])
+    checkIfTagged()
+  }, [message, roomCode, sessionName, setTaggedMessages, tempDT, tempFI])
 
   return (
     <Box
@@ -83,7 +74,7 @@ const Message = ({
       rounded="10"
     >
       <Flex height="100%" direction="row" align="center" gap="25px">
-        <Text>{message}</Text>
+        <Text>{message.message}</Text>
 
         <Spacer />
 
