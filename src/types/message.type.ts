@@ -5,6 +5,10 @@ export type IMessage = {
   createdBy: string
   message: string
   timestamp: string
-  tagFI?: tagsFI
-  tagDT?: tagsDT
+  tags: {
+    [userEmail: string]: {
+      tagFI?: tagsFI
+      tagDT?: tagsDT
+    }
+  }
 }

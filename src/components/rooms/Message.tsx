@@ -12,6 +12,7 @@ type MessageProps = {
   sessionName: string | string[] | undefined
   roomCode: string | string[] | undefined
   message: IMessage
+  userEmail: string
   setTaggedMessages: Dispatch<SetStateAction<IMessage[]>>
 }
 
@@ -19,6 +20,7 @@ const Message = ({
   backgroundColor,
   sessionName,
   roomCode,
+  userEmail,
   message,
   setTaggedMessages,
 }: MessageProps) => {
@@ -28,14 +30,14 @@ const Message = ({
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
       name: 'tagsFI',
-      defaultValue: message?.tagFI,
+      defaultValue: message?.tags?.[userEmail]?.tagFI,
       onChange: (tag) => setTempFI(tag),
     })
 
   const { getRootProps: getRootDTProps, getRadioProps: getRadioDTProps } =
     useRadioGroup({
       name: 'tagsDT',
-      defaultValue: message?.tagDT,
+      defaultValue: message?.tags?.[userEmail]?.tagDT,
       onChange: (tag) => setTempDT(tag),
     })
 
@@ -44,7 +46,16 @@ const Message = ({
 
     async function checkIfTagged() {
       try {
-        const taggedMessage = { ...message, tagFI: tempFI, tagDT: tempDT }
+        const taggedMessage = {
+          ...message,
+          tags: {
+            ...message.tags,
+            [userEmail]: {
+              tagFI: tempFI,
+              tagDT: tempDT,
+            },
+          },
+        }
 
         await axios.patch(`/api/sessions/${sessionName}/rooms/${roomCode}`, {
           taggedMessage,
@@ -62,7 +73,15 @@ const Message = ({
     }
 
     checkIfTagged()
-  }, [message, roomCode, sessionName, setTaggedMessages, tempDT, tempFI])
+  }, [
+    message,
+    roomCode,
+    sessionName,
+    setTaggedMessages,
+    tempDT,
+    tempFI,
+    userEmail,
+  ])
 
   return (
     <Box
