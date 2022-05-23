@@ -8,8 +8,10 @@ import {
   Spacer,
   useColorModeValue,
   VStack,
+  useToast,
 } from '@chakra-ui/react'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
@@ -22,11 +24,16 @@ const Room: FC = () => {
   const router = useRouter()
   const { sessionName, roomCode } = router.query
 
+  const toast = useToast()
+
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<IRoom>()
   const [taggedMessages, setTaggedMessages] = useState<IMessage[]>([])
 
   const [completionRate, setCompletionRate] = useState(0)
+
+  const { data: session } = useSession()
+  const [currentUserMail, setCurrentUserMail] = useState('')
 
   const bg = useColorModeValue('white', 'gray.800')
   const user1bg = useColorModeValue('gray.100', 'gray.600')
@@ -34,6 +41,24 @@ const Room: FC = () => {
 
   useEffect(() => {
     if (!(roomCode && sessionName)) return
+    if (!session?.user) return
+
+    const { email, isActive } = session.user
+
+    if (!email) return
+
+    setCurrentUserMail(email)
+
+    if (!isActive) {
+      toast({
+        title: `Your account is inactive, contact with a manager...`,
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      })
+      router.push('/')
+      return
+    }
 
     const getData = async () => {
       try {
@@ -45,11 +70,11 @@ const Room: FC = () => {
 
         setData(data)
 
-        if (data.messages) {
-          setTaggedMessages(
-            data?.messages.filter((m: IMessage) => m.tagFI && m.tagDT)
-          )
-        }
+        setTaggedMessages(
+          data?.messages.filter(
+            (m: IMessage) => m?.tags?.[email]?.tagFI && m?.tags?.[email]?.tagDT
+          ) ?? 0
+        )
       } catch (error) {
         console.error(getErrorMessage(error))
       } finally {
@@ -58,7 +83,7 @@ const Room: FC = () => {
     }
 
     getData()
-  }, [roomCode, sessionName])
+  }, [roomCode, sessionName, session?.user, toast, router])
 
   useEffect(() => {
     if (!data) return
@@ -106,6 +131,7 @@ const Room: FC = () => {
             <Message
               key={message.id}
               message={message}
+              userEmail={currentUserMail}
               sessionName={sessionName}
               roomCode={roomCode}
               setTaggedMessages={setTaggedMessages}

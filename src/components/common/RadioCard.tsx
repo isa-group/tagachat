@@ -1,7 +1,11 @@
 import { Box, useColorModeValue, useRadio } from '@chakra-ui/react'
 
-export function RadioCard(props) {
-  const { getInputProps, getCheckboxProps } = useRadio(props)
+type RadioCardProps = {
+  tag: string
+}
+
+const RadioCard = ({ tag, ...radioProps }: RadioCardProps) => {
+  const { getInputProps, getCheckboxProps } = useRadio(radioProps)
 
   const brandColors = useColorModeValue('blue.500', 'blue.600')
 
@@ -23,8 +27,10 @@ export function RadioCard(props) {
         px={3}
         py={1}
       >
-        {props.children}
+        {tag}
       </Box>
     </Box>
   )
 }
+
+export default RadioCard

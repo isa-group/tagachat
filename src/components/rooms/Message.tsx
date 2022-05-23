@@ -5,13 +5,14 @@ import { IMessage } from 'src/types/message.type'
 import { tagsDT, tagsFI } from 'src/types/tags.type'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
-import { RadioCard } from '../common/RadioCard'
+import RadioCard from '../common/RadioCard'
 
 type MessageProps = {
   backgroundColor: string
   sessionName: string | string[] | undefined
   roomCode: string | string[] | undefined
   message: IMessage
+  userEmail: string
   setTaggedMessages: Dispatch<SetStateAction<IMessage[]>>
 }
 
@@ -19,6 +20,7 @@ const Message = ({
   backgroundColor,
   sessionName,
   roomCode,
+  userEmail,
   message,
   setTaggedMessages,
 }: MessageProps) => {
@@ -28,14 +30,14 @@ const Message = ({
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
       name: 'tagsFI',
-      defaultValue: message?.tagFI,
+      defaultValue: message?.tags?.[userEmail]?.tagFI,
       onChange: (tag) => setTempFI(tag),
     })
 
   const { getRootProps: getRootDTProps, getRadioProps: getRadioDTProps } =
     useRadioGroup({
       name: 'tagsDT',
-      defaultValue: message?.tagDT,
+      defaultValue: message?.tags?.[userEmail]?.tagDT,
       onChange: (tag) => setTempDT(tag),
     })
 
@@ -44,7 +46,26 @@ const Message = ({
 
     async function checkIfTagged() {
       try {
-        const taggedMessage = { ...message, tagFI: tempFI, tagDT: tempDT }
+        const {
+          data: {
+            data: { messages },
+          },
+        } = await axios.get(`/api/sessions/${sessionName}/rooms/${roomCode}`)
+
+        const latestMessage = messages.find(
+          (m: { id: number }) => m.id === message.id
+        )
+
+        const taggedMessage = {
+          ...latestMessage,
+          tags: {
+            ...latestMessage.tags,
+            [userEmail]: {
+              tagFI: tempFI,
+              tagDT: tempDT,
+            },
+          },
+        }
 
         await axios.patch(`/api/sessions/${sessionName}/rooms/${roomCode}`, {
           taggedMessage,
@@ -62,7 +83,15 @@ const Message = ({
     }
 
     checkIfTagged()
-  }, [message, roomCode, sessionName, setTaggedMessages, tempDT, tempFI])
+  }, [
+    message,
+    roomCode,
+    sessionName,
+    setTaggedMessages,
+    tempDT,
+    tempFI,
+    userEmail,
+  ])
 
   return (
     <Box
@@ -84,9 +113,11 @@ const Message = ({
           spacing="0"
         >
           {tagFIOptions.map((value) => (
-            <RadioCard key={value} {...getRadioFIProps({ value })}>
-              {value}
-            </RadioCard>
+            <RadioCard
+              key={value}
+              tag={value}
+              {...getRadioFIProps({ value })}
+            />
           ))}
         </Stack>
 
@@ -96,9 +127,11 @@ const Message = ({
           spacing="0"
         >
           {tagDTOptions.map((value) => (
-            <RadioCard key={value} {...getRadioDTProps({ value })}>
-              {value}
-            </RadioCard>
+            <RadioCard
+              key={value}
+              tag={value}
+              {...getRadioDTProps({ value })}
+            />
           ))}
         </Stack>
       </Flex>

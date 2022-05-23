@@ -1,25 +1,28 @@
 import {
   Box,
-  Flex,
+  Divider,
+  Grid,
+  GridItem,
   Heading,
   Text,
   useColorModeValue,
-  VStack,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
+import { IRoom } from 'src/types/room.type'
+import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
 
 const Session = () => {
   const router = useRouter()
   const { sessionName } = router.query
-  const [isLoading, setIsLoading] = useState(true)
 
   const bg = useColorModeValue('gray.50', 'gray.700')
   const bgOnHover = useColorModeValue('gray.200', 'blue.800')
 
-  const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState<IRoom[]>([])
 
   useEffect(() => {
     if (!router.isReady) return
@@ -41,52 +44,92 @@ const Session = () => {
     <Box padding="8">
       <Heading>Session: {sessionName}</Heading>
 
-      <VStack spacing={30} mt={5}>
-        <Box w="100%" h="70px" padding="10" rounded="10">
-          <Flex
-            height="100%"
-            direction="row"
-            align="center"
-            justify="space-between"
-          >
-            <Heading size="lg">Room</Heading>
-            <Heading size="lg">Block 1</Heading>
-            <Heading size="lg">Block 2</Heading>
-          </Flex>
-        </Box>
+      <Grid
+        mt="5rem"
+        templateColumns="repeat(7, 1fr)"
+        columnGap="2rem"
+        rowGap="4rem"
+        alignItems="center"
+      >
+        <GridItem colSpan={1} m="auto">
+          <Heading size="lg">Room</Heading>
+        </GridItem>
+        <GridItem colSpan={3} m="auto">
+          <Heading size="lg">Block 1</Heading>
+        </GridItem>
+        <GridItem colSpan={3} m="auto">
+          <Heading size="lg">Block 2</Heading>
+        </GridItem>
 
-        {data.map((room: { _id: string; roomCode: number }) => (
-          <Box
-            key={room._id}
-            w="100%"
-            h="150px"
-            padding="10"
-            bg={bg}
-            rounded="10"
-            onClick={() =>
-              router.push(`/sessions/${sessionName}/rooms/${room.roomCode}`)
-            }
-            _hover={{
-              bg: bgOnHover,
-              cursor: 'pointer',
-            }}
-          >
-            <Flex
-              height="100%"
-              direction="row"
-              align="center"
-              justify="space-between"
-              grow="1"
-              shrink="1"
-              basis="0"
-            >
-              <div>
-                <Text size="lg">{room.roomCode}</Text>
-              </div>
-            </Flex>
-          </Box>
-        ))}
-      </VStack>
+        {data.map((room) => {
+          const getPercentages = calculateRoomPercentage(room)
+
+          return (
+            <Fragment key={room.roomCode}>
+              <GridItem colSpan={1} m="auto">
+                <Heading size="md">{room.roomCode}</Heading>
+              </GridItem>
+
+              <GridItem colSpan={3}>
+                <Box
+                  h="100%"
+                  padding="10"
+                  bg={bg}
+                  boxShadow={'md'}
+                  rounded={'lg'}
+                  onClick={() =>
+                    router.push(
+                      `/sessions/${sessionName}/rooms/${room.roomCode}`
+                    )
+                  }
+                  transition="all 0.2s"
+                  _hover={{
+                    bg: bgOnHover,
+                    cursor: 'pointer',
+                    boxShadow: 'xl',
+                  }}
+                >
+                  {getPercentages.length > 0 ? (
+                    getPercentages.map((percentage) => (
+                      <Text key={percentage.tag}>
+                        <strong>{percentage.tag}:</strong>{' '}
+                        {percentage.percentage}%
+                      </Text>
+                    ))
+                  ) : (
+                    <Text>No tags</Text>
+                  )}
+                </Box>
+              </GridItem>
+
+              <GridItem colSpan={3}>
+                <Box
+                  padding="10"
+                  h="100%"
+                  bg={bg}
+                  boxShadow={'md'}
+                  rounded={'lg'}
+                  onClick={() =>
+                    router.push(
+                      `/sessions/${sessionName}/rooms/${room.roomCode}`
+                    )
+                  }
+                  transition="all 0.2s"
+                  _hover={{
+                    bg: bgOnHover,
+                    cursor: 'pointer',
+                    boxShadow: 'xl',
+                  }}
+                >
+                  <Text>
+                    <strong>Here goes second block logic</strong>
+                  </Text>
+                </Box>
+              </GridItem>
+            </Fragment>
+          )
+        })}
+      </Grid>
     </Box>
   )
 }
