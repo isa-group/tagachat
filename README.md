@@ -14,7 +14,7 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Fullstack nature
+## Frontend + API in one codebase
 
 This project is a fullstack application, the backend is located in the the `pages/api` directory, which is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
