@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   Grid,
   GridItem,
   Heading,
@@ -44,19 +45,19 @@ const Session = () => {
       <Heading>Session: {sessionName}</Heading>
 
       <Grid
-        mt="40px"
-        templateColumns="repeat(5, 1fr)"
-        columnGap={8}
-        rowGap={12}
-        autoRows="1fr"
+        mt="5rem"
+        templateColumns="repeat(7, 1fr)"
+        columnGap="2rem"
+        rowGap="4rem"
+        alignItems="center"
       >
         <GridItem colSpan={1} m="auto">
           <Heading size="lg">Room</Heading>
         </GridItem>
-        <GridItem colSpan={2} m="auto">
+        <GridItem colSpan={3} m="auto">
           <Heading size="lg">Block 1</Heading>
         </GridItem>
-        <GridItem colSpan={2} m="auto">
+        <GridItem colSpan={3} m="auto">
           <Heading size="lg">Block 2</Heading>
         </GridItem>
 
@@ -69,7 +70,7 @@ const Session = () => {
                 <Heading size="md">{room.roomCode}</Heading>
               </GridItem>
 
-              <GridItem colSpan={2}>
+              <GridItem colSpan={3}>
                 <Box
                   h="100%"
                   padding="10"
@@ -101,7 +102,7 @@ const Session = () => {
                 </Box>
               </GridItem>
 
-              <GridItem colSpan={2}>
+              <GridItem colSpan={3}>
                 <Box
                   padding="10"
                   h="100%"
