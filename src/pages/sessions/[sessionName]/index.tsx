@@ -11,31 +11,7 @@ import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import { IRoom } from 'src/types/room.type'
-
-function getRoomPercentage(room: IRoom) {
-  const totalMessages = room.messages.length
-
-  // const result = room.messages.reduce((acc, curr) => acc.set(), new Map())
-
-  const tagOcurrences = new Map()
-  // reviso cada cuarto
-  for (const message of room.messages) {
-    // cuento si el usuario tiene tag
-    for (const tag in message.tags) {
-      tagOcurrences.set(tag, (tagOcurrences.get(tag) || 0) + 1)
-    }
-  }
-
-  const result = Array.from(tagOcurrences.entries()).reduce((acc, curr) => {
-    acc.push({
-      tag: curr[0],
-      percentage: Math.round((curr[1] / totalMessages) * 100),
-    })
-    return acc
-  }, [] as { tag: string; percentage: number }[])
-
-  return result
-}
+import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
 
 const Session = () => {
   const router = useRouter()
@@ -85,7 +61,7 @@ const Session = () => {
         </GridItem>
 
         {data.map((room) => {
-          const getPercentages = getRoomPercentage(room)
+          const getPercentages = calculateRoomPercentage(room)
 
           return (
             <Fragment key={room.roomCode}>
