@@ -1,4 +1,11 @@
-import { Box, Flex, Spacer, Stack, Text, useRadioGroup } from '@chakra-ui/react'
+import {
+  Box,
+  ButtonGroup,
+  Flex,
+  Spacer,
+  Text,
+  useRadioGroup,
+} from '@chakra-ui/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IMessage } from 'src/types/message.type'
@@ -98,20 +105,16 @@ const Message = ({
       w="100%"
       h="auto"
       paddingY="4"
-      paddingX="10"
+      paddingX="8"
       bg={backgroundColor}
       rounded="10"
     >
-      <Flex height="100%" direction="row" align="center" gap="25px">
+      <Flex height="100%" direction="row" align="center" gap="15px">
         <Text>{message.message}</Text>
 
         <Spacer />
 
-        <Stack
-          {...getRootFIProps()}
-          direction={{ base: 'column', xl: 'row' }}
-          spacing="0"
-        >
+        <ButtonGroup isAttached {...getRootFIProps()}>
           {tagFIOptions.map((value) => (
             <RadioCard
               key={value}
@@ -119,13 +122,9 @@ const Message = ({
               {...getRadioFIProps({ value })}
             />
           ))}
-        </Stack>
+        </ButtonGroup>
 
-        <Stack
-          {...getRootDTProps()}
-          direction={{ base: 'column', lg: 'row' }}
-          spacing="0"
-        >
+        <ButtonGroup isAttached {...getRootDTProps()}>
           {tagDTOptions.map((value) => (
             <RadioCard
               key={value}
@@ -133,7 +132,7 @@ const Message = ({
               {...getRadioDTProps({ value })}
             />
           ))}
-        </Stack>
+        </ButtonGroup>
       </Flex>
     </Box>
   )

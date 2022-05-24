@@ -56,7 +56,7 @@ function LoginForm() {
           isClosable: true,
         })
 
-        router.replace('/')
+        router.replace('/sessions')
       }
     } catch (error) {
       toast({

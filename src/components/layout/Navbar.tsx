@@ -27,7 +27,6 @@ import { ActiveThemedLink } from '../common/ActiveThemeLink'
 
 const NavLinks = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
   <>
-    <ActiveThemedLink href="/">Home Page</ActiveThemedLink>
     {isLoggedIn && (
       <ActiveThemedLink href="/sessions">Sessions</ActiveThemedLink>
     )}
@@ -58,7 +57,7 @@ const Navbar: FC = (props) => {
           />
 
           <HStack spacing="12" alignItems="center">
-            <Link href="/" passHref>
+            <Link href="/sessions" passHref>
               <Heading
                 as="h1"
                 fontSize={{ base: '18px', md: '26px' }}

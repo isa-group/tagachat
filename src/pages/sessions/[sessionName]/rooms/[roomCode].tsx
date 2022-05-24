@@ -9,11 +9,13 @@ import {
   useColorModeValue,
   VStack,
   useToast,
+  Icon,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
+import { HiUser } from 'react-icons/hi'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
 import { IMessage } from 'src/types/message.type'
@@ -36,7 +38,7 @@ const Room: FC = () => {
   const [currentUserMail, setCurrentUserMail] = useState('')
 
   const bg = useColorModeValue('white', 'gray.800')
-  const user1bg = useColorModeValue('gray.100', 'gray.600')
+  const user1bg = useColorModeValue('gray.200', 'gray.600')
   const user2bg = useColorModeValue('blue.300', 'blue.900')
 
   useEffect(() => {
@@ -108,20 +110,27 @@ const Room: FC = () => {
             paddingY: '4',
             position: 'sticky',
             top: '0',
+            zIndex: '1',
           }}
         >
           <Heading>Room {roomCode}</Heading>
           <Spacer />
           <Flex direction="row" align="center" justify="center" gap="30px">
             <Box bg={user1bg} padding="2" rounded="10">
-              <Text>Participant ID: {data?.participant1Code}</Text>
+              <Flex direction="row" align="center" justify="center" gap="10px">
+                <Icon as={HiUser} />
+                <Text>ID: {data?.participant1Code}</Text>
+              </Flex>
             </Box>
             <Box bg={user2bg} padding="2" rounded="10">
-              <Text>Participant ID: {data?.participant2Code}</Text>
+              <Flex direction="row" align="center" justify="center" gap="10px">
+                <Icon as={HiUser} />
+                <Text>ID: {data?.participant2Code}</Text>
+              </Flex>
             </Box>
           </Flex>
           <Spacer />
-          <CircularProgress value={completionRate} size="70px">
+          <CircularProgress value={completionRate} size="70px" thickness="10px">
             <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
           </CircularProgress>
         </Flex>
