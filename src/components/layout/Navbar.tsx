@@ -27,7 +27,6 @@ import { ActiveThemedLink } from '../common/ActiveThemeLink'
 
 const NavLinks = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
   <>
-    <ActiveThemedLink href="/">Home Page</ActiveThemedLink>
     {isLoggedIn && (
       <ActiveThemedLink href="/sessions">Sessions</ActiveThemedLink>
     )}

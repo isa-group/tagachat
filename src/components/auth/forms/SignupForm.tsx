@@ -76,7 +76,7 @@ function SignupForm() {
         isClosable: true,
       })
 
-      router.push('/')
+      router.push('/login')
     } catch (error) {
       toast({
         title: (error as Error).message,
