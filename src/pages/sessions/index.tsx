@@ -4,6 +4,7 @@ import {
   Flex,
   Heading,
   HStack,
+  SimpleGrid,
   Spacer,
   Text,
   useColorModeValue,
@@ -21,7 +22,10 @@ import { UserRoles } from 'src/utils/enums/userRoles'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
+
   const bg = useColorModeValue('gray.50', 'gray.700')
+  const bgOnHover = useColorModeValue('gray.200', 'blue.800')
+
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -70,17 +74,11 @@ const SessionList: FC = (props) => {
   if (isLoading) return <LoadingSpinner loading={isLoading} />
 
   return (
-    <Box padding="8">
+    <Box padding="3rem">
       <HStack>
-        <Heading as="h1" size="lg">
-          Sessions
-        </Heading>
-
+        <Heading>Sessions</Heading>
         <Spacer />
-
-        <Button onClick={onOpen}>
-          <Text>Import Session</Text>
-        </Button>
+        <Button onClick={onOpen}>Import Session</Button>
       </HStack>
 
       <SessionModal
@@ -89,30 +87,28 @@ const SessionList: FC = (props) => {
         setUpdateSessions={setUpdateSessions}
       />
 
-      <VStack spacing={30} mt={5}>
+      <SimpleGrid columns={[2, null, 3]} spacing="2rem" mt="3rem">
         {data.map((session: { _id: string; name: string }) => (
           <Box
             key={session._id}
-            w="100%"
-            h="70px"
-            padding="10"
             bg={bg}
-            rounded="10"
+            padding="10"
+            rounded="lg"
+            boxShadow="md"
+            transition="all 0.2s"
+            _hover={{
+              bg: bgOnHover,
+              cursor: 'pointer',
+              boxShadow: 'xl',
+            }}
+            onClick={() => router.push(`/sessions/${session.name}`)}
           >
-            <Flex
-              height="100%"
-              direction="row"
-              align="center"
-              justify="space-between"
-            >
-              <Text>{session.name}</Text>
-              <Button onClick={() => router.push(`/sessions/${session.name}`)}>
-                Open
-              </Button>
-            </Flex>
+            <Text fontSize="xl" align="center" fontWeight="bold">
+              {session.name}
+            </Text>
           </Box>
         ))}
-      </VStack>
+      </SimpleGrid>
     </Box>
   )
 }

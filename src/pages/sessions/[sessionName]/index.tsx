@@ -41,11 +41,11 @@ const Session = () => {
   if (isLoading) return <LoadingSpinner loading={isLoading} />
 
   return (
-    <Box padding="8">
+    <Box padding="3rem">
       <Heading>Session: {sessionName}</Heading>
 
       <Grid
-        mt="5rem"
+        mt="3rem"
         templateColumns="repeat(7, 1fr)"
         columnGap="2rem"
         rowGap="4rem"
@@ -75,8 +75,8 @@ const Session = () => {
                   h="100%"
                   padding="10"
                   bg={bg}
-                  boxShadow={'md'}
-                  rounded={'lg'}
+                  boxShadow="md"
+                  rounded="lg"
                   onClick={() =>
                     router.push(
                       `/sessions/${sessionName}/rooms/${room.roomCode}`
