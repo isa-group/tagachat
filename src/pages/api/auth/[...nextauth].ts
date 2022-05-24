@@ -11,16 +11,13 @@ const nextAuthOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       id: 'email-login',
-      name: 'login',
       credentials: {
         email: {
-          label: 'Email',
           type: 'email',
-          placeholder: 'email@domain.com',
         },
-        password: { label: 'Password', type: 'password' },
+        password: { type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const client = await clientPromise
         const db = client.db()
         const usersCollection = db.collection('users')
