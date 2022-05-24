@@ -57,7 +57,7 @@ const Navbar: FC = (props) => {
           />
 
           <HStack spacing="12" alignItems="center">
-            <Link href="/" passHref>
+            <Link href="/sessions" passHref>
               <Heading
                 as="h1"
                 fontSize={{ base: '18px', md: '26px' }}
