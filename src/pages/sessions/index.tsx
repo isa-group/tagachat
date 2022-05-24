@@ -52,13 +52,7 @@ const SessionList: FC = (props) => {
   useEffect(() => {
     if (!session) return
 
-    if (
-      !(
-        session?.user.role === UserRoles.REVIEWER ||
-        session?.user.role === UserRoles.ADMIN ||
-        session?.user.isActive
-      )
-    ) {
+    if (!session?.user.isActive) {
       toast({
         title: "You don't have permissions to view this page",
         description: 'Redirecting you to homepage...',
