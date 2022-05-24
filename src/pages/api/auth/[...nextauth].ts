@@ -4,13 +4,12 @@ import clientPromise from 'src/lib/mongodb'
 import { verifyPassword } from 'src/lib/bcryptjs'
 
 const nextAuthOptions: NextAuthOptions = {
-  secret: process.env.NEXT_AUTH_SECRET,
   session: {
     strategy: 'jwt',
   },
   providers: [
     CredentialsProvider({
-      id: 'email-login',
+      id: 'credentials',
       credentials: {
         email: {
           type: 'email',
@@ -58,6 +57,7 @@ const nextAuthOptions: NextAuthOptions = {
   pages: {
     signIn: '/login',
   },
+  debug: process.env.NODE_ENV === 'development',
 }
 
 export default NextAuth(nextAuthOptions)

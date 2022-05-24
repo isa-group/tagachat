@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 
-import { getSession, signIn, SignInResponse } from 'next-auth/react'
+import { getSession, signIn } from 'next-auth/react'
 
 import LoadingSpinner from '../../common/LoadingSpinner'
 import PasswordInput from '../PasswordInput'
@@ -40,14 +40,11 @@ function LoginForm() {
     try {
       setIsLoading(true)
 
-      const result: SignInResponse | undefined = await signIn<'credentials'>(
-        'email-login',
-        {
-          redirect: false,
-          email: email,
-          password: password,
-        }
-      )
+      const result = await signIn<'credentials'>('credentials', {
+        redirect: false,
+        email: email,
+        password: password,
+      })
 
       if (!!result && result.error) {
         throw new Error(result.error)
