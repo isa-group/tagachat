@@ -2,18 +2,16 @@ import {
   Box,
   CircularProgress,
   CircularProgressLabel,
-  Divider,
-  Flex,
   Grid,
   GridItem,
   Heading,
   HStack,
   Text,
-  useColorModeValue,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
+import FloatingCard from 'src/components/common/FloatingCard'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import { IRoom } from 'src/types/room.type'
 import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
@@ -21,9 +19,6 @@ import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
 const Session = () => {
   const router = useRouter()
   const { sessionName } = router.query
-
-  const bg = useColorModeValue('gray.50', 'gray.700')
-  const bgOnHover = useColorModeValue('gray.50', 'blue.800')
 
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<IRoom[]>([])
@@ -75,22 +70,8 @@ const Session = () => {
               </GridItem>
 
               <GridItem colSpan={3}>
-                <Flex
-                  direction="column"
-                  gap="2rem"
-                  h="100%"
-                  padding="10"
-                  bg={bg}
-                  boxShadow="md"
-                  rounded="lg"
-                  transition="all 0.2s"
-                  _hover={{
-                    bg: bgOnHover,
-                    cursor: 'pointer',
-                    boxShadow: 'xl',
-                    transform: 'translateY(-3px)',
-                  }}
-                  onClick={() =>
+                <FloatingCard
+                  goToPage={() =>
                     router.push(
                       `/sessions/${sessionName}/rooms/${room.roomCode}`
                     )
@@ -114,32 +95,21 @@ const Session = () => {
                   ) : (
                     <Text>No tags</Text>
                   )}
-                </Flex>
+                </FloatingCard>
               </GridItem>
 
               <GridItem colSpan={3}>
-                <Box
-                  padding="10"
-                  h="100%"
-                  bg={bg}
-                  boxShadow={'md'}
-                  rounded={'lg'}
-                  onClick={() =>
+                <FloatingCard
+                  goToPage={() =>
                     router.push(
                       `/sessions/${sessionName}/rooms/${room.roomCode}`
                     )
                   }
-                  transition="all 0.2s"
-                  _hover={{
-                    bg: bgOnHover,
-                    cursor: 'pointer',
-                    boxShadow: 'xl',
-                  }}
                 >
                   <Text>
                     <strong>Here goes second block logic</strong>
                   </Text>
-                </Box>
+                </FloatingCard>
               </GridItem>
             </Fragment>
           )

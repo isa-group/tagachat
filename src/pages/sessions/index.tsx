@@ -1,31 +1,24 @@
 import {
   Box,
   Button,
-  Flex,
   Heading,
   HStack,
   SimpleGrid,
   Spacer,
   Text,
-  useColorModeValue,
   useDisclosure,
   useToast,
-  VStack,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
+import FloatingCard from 'src/components/common/FloatingCard'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import SessionModal from 'src/components/sessions/SessionModal'
-import { UserRoles } from 'src/utils/enums/userRoles'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
-
-  const bg = useColorModeValue('gray.50', 'gray.700')
-  const bgOnHover = useColorModeValue('gray.50', 'blue.800')
-
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -83,25 +76,14 @@ const SessionList: FC = (props) => {
 
       <SimpleGrid columns={[2, null, 3]} spacing="2rem" mt="3rem">
         {data.map((session: { _id: string; name: string }) => (
-          <Box
+          <FloatingCard
             key={session._id}
-            bg={bg}
-            padding="10"
-            boxShadow="md"
-            rounded="lg"
-            transition="all 0.2s"
-            _hover={{
-              bg: bgOnHover,
-              cursor: 'pointer',
-              boxShadow: 'xl',
-              transform: 'translateY(-3px)',
-            }}
-            onClick={() => router.push(`/sessions/${session.name}`)}
+            goToPage={() => router.push(`/sessions/${session.name}`)}
           >
-            <Text fontSize="xl" align="center" fontWeight="bold">
+            <Text fontSize="xl" fontWeight="bold">
               {session.name}
             </Text>
-          </Box>
+          </FloatingCard>
         ))}
       </SimpleGrid>
     </Box>
