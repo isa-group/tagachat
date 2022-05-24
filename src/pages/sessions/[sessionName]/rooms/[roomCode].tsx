@@ -130,7 +130,7 @@ const Room: FC = () => {
             </Box>
           </Flex>
           <Spacer />
-          <CircularProgress value={completionRate} size="70px">
+          <CircularProgress value={completionRate} size="70px" thickness="10px">
             <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
           </CircularProgress>
         </Flex>

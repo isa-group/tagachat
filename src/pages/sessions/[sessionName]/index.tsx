@@ -1,9 +1,13 @@
 import {
   Box,
+  CircularProgress,
+  CircularProgressLabel,
   Divider,
+  Flex,
   Grid,
   GridItem,
   Heading,
+  HStack,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react'
@@ -19,7 +23,7 @@ const Session = () => {
   const { sessionName } = router.query
 
   const bg = useColorModeValue('gray.50', 'gray.700')
-  const bgOnHover = useColorModeValue('gray.200', 'blue.800')
+  const bgOnHover = useColorModeValue('gray.50', 'blue.800')
 
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<IRoom[]>([])
@@ -71,35 +75,46 @@ const Session = () => {
               </GridItem>
 
               <GridItem colSpan={3}>
-                <Box
+                <Flex
+                  direction="column"
+                  gap="2rem"
                   h="100%"
                   padding="10"
                   bg={bg}
                   boxShadow="md"
                   rounded="lg"
-                  onClick={() =>
-                    router.push(
-                      `/sessions/${sessionName}/rooms/${room.roomCode}`
-                    )
-                  }
                   transition="all 0.2s"
                   _hover={{
                     bg: bgOnHover,
                     cursor: 'pointer',
                     boxShadow: 'xl',
+                    transform: 'translateY(-3px)',
                   }}
+                  onClick={() =>
+                    router.push(
+                      `/sessions/${sessionName}/rooms/${room.roomCode}`
+                    )
+                  }
                 >
                   {getPercentages.length > 0 ? (
                     getPercentages.map((percentage) => (
-                      <Text key={percentage.tag}>
-                        <strong>{percentage.tag}:</strong>{' '}
-                        {percentage.percentage}%
-                      </Text>
+                      <HStack key={percentage.tag} justify="space-between">
+                        <Text fontWeight="bold">{percentage.tag}</Text>
+                        <CircularProgress
+                          value={percentage.percentage}
+                          color="blue.400"
+                          thickness="6px"
+                        >
+                          <CircularProgressLabel>
+                            {percentage.percentage}%
+                          </CircularProgressLabel>
+                        </CircularProgress>
+                      </HStack>
                     ))
                   ) : (
                     <Text>No tags</Text>
                   )}
-                </Box>
+                </Flex>
               </GridItem>
 
               <GridItem colSpan={3}>

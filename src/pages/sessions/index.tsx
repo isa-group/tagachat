@@ -24,7 +24,7 @@ const SessionList: FC = (props) => {
   const router = useRouter()
 
   const bg = useColorModeValue('gray.50', 'gray.700')
-  const bgOnHover = useColorModeValue('gray.200', 'blue.800')
+  const bgOnHover = useColorModeValue('gray.50', 'blue.800')
 
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -93,13 +93,14 @@ const SessionList: FC = (props) => {
             key={session._id}
             bg={bg}
             padding="10"
-            rounded="lg"
             boxShadow="md"
+            rounded="lg"
             transition="all 0.2s"
             _hover={{
               bg: bgOnHover,
               cursor: 'pointer',
               boxShadow: 'xl',
+              transform: 'translateY(-3px)',
             }}
             onClick={() => router.push(`/sessions/${session.name}`)}
           >
