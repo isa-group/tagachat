@@ -9,11 +9,13 @@ import {
   useColorModeValue,
   VStack,
   useToast,
+  Icon,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
+import { HiUser } from 'react-icons/hi'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
 import { IMessage } from 'src/types/message.type'
@@ -115,10 +117,16 @@ const Room: FC = () => {
           <Spacer />
           <Flex direction="row" align="center" justify="center" gap="30px">
             <Box bg={user1bg} padding="2" rounded="10">
-              <Text>Participant ID: {data?.participant1Code}</Text>
+              <Flex direction="row" align="center" justify="center" gap="10px">
+                <Icon as={HiUser} />
+                <Text>ID: {data?.participant1Code}</Text>
+              </Flex>
             </Box>
             <Box bg={user2bg} padding="2" rounded="10">
-              <Text>Participant ID: {data?.participant2Code}</Text>
+              <Flex direction="row" align="center" justify="center" gap="10px">
+                <Icon as={HiUser} />
+                <Text>ID: {data?.participant2Code}</Text>
+              </Flex>
             </Box>
           </Flex>
           <Spacer />
