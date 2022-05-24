@@ -1,4 +1,4 @@
-import { Box, useColorModeValue, useRadio } from '@chakra-ui/react'
+import { Button, useColorModeValue, useRadio } from '@chakra-ui/react'
 
 type RadioCardProps = {
   tag: string
@@ -13,23 +13,19 @@ const RadioCard = ({ tag, ...radioProps }: RadioCardProps) => {
   const checkbox = getCheckboxProps()
 
   return (
-    <Box as="label">
+    <Button
+      size="sm"
+      as="label"
+      cursor="pointer"
+      {...checkbox}
+      _checked={{
+        bg: brandColors,
+        color: 'white',
+      }}
+    >
+      {tag}
       <input {...input} />
-      <Box
-        {...checkbox}
-        cursor="pointer"
-        borderWidth="1px"
-        borderColor={brandColors}
-        _checked={{
-          bg: brandColors,
-          color: 'white',
-        }}
-        px={3}
-        py={1}
-      >
-        {tag}
-      </Box>
-    </Box>
+    </Button>
   )
 }
 

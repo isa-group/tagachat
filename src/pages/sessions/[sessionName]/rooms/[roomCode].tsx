@@ -36,7 +36,7 @@ const Room: FC = () => {
   const [currentUserMail, setCurrentUserMail] = useState('')
 
   const bg = useColorModeValue('white', 'gray.800')
-  const user1bg = useColorModeValue('gray.100', 'gray.600')
+  const user1bg = useColorModeValue('gray.200', 'gray.600')
   const user2bg = useColorModeValue('blue.300', 'blue.900')
 
   useEffect(() => {
@@ -108,6 +108,7 @@ const Room: FC = () => {
             paddingY: '4',
             position: 'sticky',
             top: '0',
+            zIndex: '1',
           }}
         >
           <Heading>Room {roomCode}</Heading>
