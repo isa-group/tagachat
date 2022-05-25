@@ -6,7 +6,5 @@ export type IRoom = {
   roomCode: number
   participant1Code: string
   participant2Code: string
-  firstBlockMessages: IMessage[]
-  secondBlockMessages: IMessage[]
-  messages?: IMessage[]
+  messages: IMessage[]
 }
