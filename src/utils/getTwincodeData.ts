@@ -70,12 +70,15 @@ function cleanData(chats: Map<any, any>, sessionName: any) {
       }
     )
 
+    const messagesWithBlocks = value.map((message: IMessage, idx: number) => ({
+      ...message,
+      block: idx < blockIndex ? 1 : 2,
+    }))
+
     const room = {
       ...key,
       sessionName,
-      firstBlockMessages: value.slice(0, blockIndex),
-      secondBlockMessages: value.slice(blockIndex),
-      ...(!blockIndex && { messages: value }),
+      messages: messagesWithBlocks,
     }
 
     cleanData.push(room)
