@@ -5,6 +5,7 @@ export type IMessage = {
   createdBy: string
   message: string
   timestamp: string
+  block: 1 | 2
   tags: {
     [userEmail: string]: {
       tagFI?: tagsFI

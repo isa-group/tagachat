@@ -1,3 +1,6 @@
+import { differenceInMinutes } from 'date-fns'
+import { IMessage } from 'src/types/message.type'
+
 type ParticipantData = { code: string; room: number }
 
 function getRooms(participants: ParticipantData[]) {
@@ -30,7 +33,7 @@ function getChats(rooms: Map<any, any>, logs: any[]) {
       .map((log, idx) => ({
         id: idx,
         createdBy: log.createdBy,
-        message: log.payload,
+        message: log.payload.trim(),
         timestamp: log.timestamp,
       }))
 
@@ -55,10 +58,27 @@ function cleanData(chats: Map<any, any>, sessionName: any) {
     if (!(key.participant1Code && key.participant2Code)) continue
     if (value.length === 0) continue
 
+    const blockIndex = value.findIndex(
+      (message: IMessage, i: number, array: IMessage[]) => {
+        const element = message
+        const prevElement = array[i - 1] ? array[i - 1] : element
+
+        const date = new Date(element.timestamp)
+        const prevDate = new Date(prevElement.timestamp)
+
+        return differenceInMinutes(date, prevDate) >= 20
+      }
+    )
+
+    const messagesWithBlocks = value.map((message: IMessage, idx: number) => ({
+      ...message,
+      block: idx < blockIndex ? 1 : 2,
+    }))
+
     const room = {
       ...key,
       sessionName,
-      messages: value,
+      messages: messagesWithBlocks,
     }
 
     cleanData.push(room)
