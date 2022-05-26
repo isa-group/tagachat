@@ -5,7 +5,6 @@ import { Fragment, useEffect, useState } from 'react'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import PercentageFloatingCard from 'src/components/rooms/PercentageFloatingCard'
 import { IRoom } from 'src/types/room.type'
-import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
 
 const Session = () => {
   const router = useRouter()
@@ -58,25 +57,11 @@ const Session = () => {
             </GridItem>
 
             <GridItem colSpan={3}>
-              <PercentageFloatingCard
-                getPercentages={calculateRoomPercentage(room.messages, 1)}
-                goToPage={() =>
-                  router.push(
-                    `/sessions/${sessionName}/rooms/${room.roomCode}?block=1`
-                  )
-                }
-              />
+              <PercentageFloatingCard room={room} block={1} />
             </GridItem>
 
             <GridItem colSpan={3}>
-              <PercentageFloatingCard
-                getPercentages={calculateRoomPercentage(room.messages, 2)}
-                goToPage={() =>
-                  router.push(
-                    `/sessions/${sessionName}/rooms/${room.roomCode}?block=2`
-                  )
-                }
-              />
+              <PercentageFloatingCard room={room} block={2} />
             </GridItem>
           </Fragment>
         ))}

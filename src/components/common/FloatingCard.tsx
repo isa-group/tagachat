@@ -2,7 +2,7 @@ import { Flex, useColorModeValue } from '@chakra-ui/react'
 import { FC } from 'react'
 
 type FloatingCardProps = {
-  goToPage: any
+  goToPage: () => void
 }
 
 const FloatingCard: FC<FloatingCardProps> = ({ children, goToPage }) => {
