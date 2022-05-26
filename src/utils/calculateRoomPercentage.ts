@@ -1,11 +1,13 @@
-import { IRoom } from './../types/room.type'
+import { IMessage } from 'src/types/message.type'
 
-const calculateRoomPercentage = (room: IRoom) => {
-  const totalMessages = room.messages.length
+const calculateRoomPercentage = (messages: IMessage[], block: 1 | 2) => {
+  const totalMessages = messages.filter((message) => message.block === block)
 
   const tagOcurrences = new Map()
 
-  for (const message of room.messages) {
+  for (const message of messages) {
+    if (message.block != block) continue
+
     for (const tag in message.tags) {
       tagOcurrences.set(tag, (tagOcurrences.get(tag) || 0) + 1)
     }
@@ -13,11 +15,11 @@ const calculateRoomPercentage = (room: IRoom) => {
 
   const result = Array.from(tagOcurrences.entries()).reduce((acc, curr) => {
     acc.push({
-      tag: curr[0],
-      percentage: Math.round((curr[1] / totalMessages) * 100),
+      reviewer: curr[0],
+      percentage: Math.round((curr[1] / totalMessages.length) * 100),
     })
     return acc
-  }, [] as { tag: string; percentage: number }[])
+  }, [] as { reviewer: string; percentage: number }[])
 
   return result
 }

@@ -61,7 +61,8 @@ const Session = () => {
         </GridItem>
 
         {data.map((room) => {
-          const getPercentages = calculateRoomPercentage(room)
+          const getPercentages = calculateRoomPercentage(room.messages, 1)
+          const getPercentages2 = calculateRoomPercentage(room.messages, 2)
 
           return (
             <Fragment key={room.roomCode}>
@@ -73,14 +74,14 @@ const Session = () => {
                 <FloatingCard
                   goToPage={() =>
                     router.push(
-                      `/sessions/${sessionName}/rooms/${room.roomCode}`
+                      `/sessions/${sessionName}/rooms/${room.roomCode}?block=1`
                     )
                   }
                 >
                   {getPercentages.length > 0 ? (
                     getPercentages.map((percentage) => (
-                      <HStack key={percentage.tag} justify="space-between">
-                        <Text fontWeight="bold">{percentage.tag}</Text>
+                      <HStack key={percentage.reviewer} justify="space-between">
+                        <Text fontWeight="bold">{percentage.reviewer}</Text>
                         <CircularProgress
                           value={percentage.percentage}
                           color="blue.400"
@@ -102,13 +103,28 @@ const Session = () => {
                 <FloatingCard
                   goToPage={() =>
                     router.push(
-                      `/sessions/${sessionName}/rooms/${room.roomCode}`
+                      `/sessions/${sessionName}/rooms/${room.roomCode}?block=2`
                     )
                   }
                 >
-                  <Text>
-                    <strong>Here goes second block logic</strong>
-                  </Text>
+                  {getPercentages2.length > 0 ? (
+                    getPercentages2.map((percentage) => (
+                      <HStack key={percentage.reviewer} justify="space-between">
+                        <Text fontWeight="bold">{percentage.reviewer}</Text>
+                        <CircularProgress
+                          value={percentage.percentage}
+                          color="blue.400"
+                          thickness="6px"
+                        >
+                          <CircularProgressLabel>
+                            {percentage.percentage}%
+                          </CircularProgressLabel>
+                        </CircularProgress>
+                      </HStack>
+                    ))
+                  ) : (
+                    <Text>No tags</Text>
+                  )}
                 </FloatingCard>
               </GridItem>
             </Fragment>

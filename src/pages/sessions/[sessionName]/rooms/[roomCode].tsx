@@ -24,7 +24,7 @@ import { getErrorMessage } from 'src/utils/getErrorMessage'
 
 const Room: FC = () => {
   const router = useRouter()
-  const { sessionName, roomCode } = router.query
+  const { sessionName, roomCode, block } = router.query
 
   const toast = useToast()
 
@@ -42,8 +42,9 @@ const Room: FC = () => {
   const user2bg = useColorModeValue('blue.300', 'blue.900')
 
   useEffect(() => {
-    if (!(roomCode && sessionName)) return
+    if (!(roomCode && sessionName && block)) return
     if (!session?.user) return
+    if (typeof block !== 'string') return
 
     const { email, isActive } = session.user
 
@@ -70,13 +71,17 @@ const Room: FC = () => {
           data: { data },
         } = await axios.get(`/api/sessions/${sessionName}/rooms/${roomCode}`)
 
-        setData(data)
+        const blockMessages = data.messages.filter(
+          (message: IMessage) => message.block === parseInt(block)
+        )
 
         setTaggedMessages(
-          data?.messages.filter(
+          blockMessages.filter(
             (m: IMessage) => m?.tags?.[email]?.tagFI && m?.tags?.[email]?.tagDT
           ) ?? 0
         )
+
+        setData({ ...data, messages: blockMessages })
       } catch (error) {
         console.error(getErrorMessage(error))
       } finally {
@@ -85,7 +90,7 @@ const Room: FC = () => {
     }
 
     getData()
-  }, [roomCode, sessionName, session?.user, toast, router])
+  }, [roomCode, sessionName, session?.user, toast, router, block])
 
   useEffect(() => {
     if (!data) return
