@@ -1,18 +1,9 @@
-import {
-  Box,
-  CircularProgress,
-  CircularProgressLabel,
-  Grid,
-  GridItem,
-  Heading,
-  HStack,
-  Text,
-} from '@chakra-ui/react'
+import { Box, Grid, GridItem, Heading } from '@chakra-ui/react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
-import FloatingCard from 'src/components/common/FloatingCard'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
+import PercentageFloatingCard from 'src/components/rooms/PercentageFloatingCard'
 import { IRoom } from 'src/types/room.type'
 import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
 
@@ -60,76 +51,35 @@ const Session = () => {
           <Heading size="lg">Block 2</Heading>
         </GridItem>
 
-        {data.map((room) => {
-          const getPercentages = calculateRoomPercentage(room.messages, 1)
-          const getPercentages2 = calculateRoomPercentage(room.messages, 2)
+        {data.map((room) => (
+          <Fragment key={room.roomCode}>
+            <GridItem colSpan={1} m="auto">
+              <Heading size="md">{room.roomCode}</Heading>
+            </GridItem>
 
-          return (
-            <Fragment key={room.roomCode}>
-              <GridItem colSpan={1} m="auto">
-                <Heading size="md">{room.roomCode}</Heading>
-              </GridItem>
+            <GridItem colSpan={3}>
+              <PercentageFloatingCard
+                getPercentages={calculateRoomPercentage(room.messages, 1)}
+                goToPage={() =>
+                  router.push(
+                    `/sessions/${sessionName}/rooms/${room.roomCode}?block=1`
+                  )
+                }
+              />
+            </GridItem>
 
-              <GridItem colSpan={3}>
-                <FloatingCard
-                  goToPage={() =>
-                    router.push(
-                      `/sessions/${sessionName}/rooms/${room.roomCode}?block=1`
-                    )
-                  }
-                >
-                  {getPercentages.length > 0 ? (
-                    getPercentages.map((percentage) => (
-                      <HStack key={percentage.reviewer} justify="space-between">
-                        <Text fontWeight="bold">{percentage.reviewer}</Text>
-                        <CircularProgress
-                          value={percentage.percentage}
-                          color="blue.400"
-                          thickness="6px"
-                        >
-                          <CircularProgressLabel>
-                            {percentage.percentage}%
-                          </CircularProgressLabel>
-                        </CircularProgress>
-                      </HStack>
-                    ))
-                  ) : (
-                    <Text>No tags</Text>
-                  )}
-                </FloatingCard>
-              </GridItem>
-
-              <GridItem colSpan={3}>
-                <FloatingCard
-                  goToPage={() =>
-                    router.push(
-                      `/sessions/${sessionName}/rooms/${room.roomCode}?block=2`
-                    )
-                  }
-                >
-                  {getPercentages2.length > 0 ? (
-                    getPercentages2.map((percentage) => (
-                      <HStack key={percentage.reviewer} justify="space-between">
-                        <Text fontWeight="bold">{percentage.reviewer}</Text>
-                        <CircularProgress
-                          value={percentage.percentage}
-                          color="blue.400"
-                          thickness="6px"
-                        >
-                          <CircularProgressLabel>
-                            {percentage.percentage}%
-                          </CircularProgressLabel>
-                        </CircularProgress>
-                      </HStack>
-                    ))
-                  ) : (
-                    <Text>No tags</Text>
-                  )}
-                </FloatingCard>
-              </GridItem>
-            </Fragment>
-          )
-        })}
+            <GridItem colSpan={3}>
+              <PercentageFloatingCard
+                getPercentages={calculateRoomPercentage(room.messages, 2)}
+                goToPage={() =>
+                  router.push(
+                    `/sessions/${sessionName}/rooms/${room.roomCode}?block=2`
+                  )
+                }
+              />
+            </GridItem>
+          </Fragment>
+        ))}
       </Grid>
     </Box>
   )
