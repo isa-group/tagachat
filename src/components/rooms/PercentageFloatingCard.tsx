@@ -4,11 +4,13 @@ import {
   HStack,
   CircularProgress,
 } from '@chakra-ui/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { IRoom } from 'src/types/room.type'
 import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
 import FloatingCard from '../common/FloatingCard'
+import { ArrowRightIcon } from '@chakra-ui/icons'
 
 type PercentageFloatingCardProps = {
   block: 1 | 2
@@ -20,6 +22,8 @@ const PercentageFloatingCard: FC<PercentageFloatingCardProps> = ({
   room,
 }) => {
   const router = useRouter()
+  const { data: userSession } = useSession()
+
   const percentages = calculateRoomPercentage(room.messages, block)
 
   return (
@@ -33,7 +37,14 @@ const PercentageFloatingCard: FC<PercentageFloatingCardProps> = ({
       {percentages.length > 0 ? (
         percentages.map((percentage) => (
           <HStack key={percentage.reviewer} justify="space-between">
-            <Text fontWeight="bold">{percentage.reviewer}</Text>
+            <Text fontWeight="bold">
+              {userSession?.user.email === percentage.reviewer ? (
+                <>your progress</>
+              ) : (
+                <>{percentage.reviewer}</>
+              )}
+            </Text>
+            <ArrowRightIcon h="10px" />
             <CircularProgress
               value={percentage.percentage}
               color="blue.400"
