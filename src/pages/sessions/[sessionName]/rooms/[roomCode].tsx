@@ -10,6 +10,8 @@ import {
   VStack,
   useToast,
   Icon,
+  Skeleton,
+  Stack,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
@@ -101,62 +103,83 @@ const Room: FC = () => {
     setCompletionRate(Math.round((taggedMessagesLength / dataLength) * 100))
   }, [data, taggedMessages?.length])
 
-  if (loading) return <LoadingSpinner loading={loading} />
-
   return (
-    { data } && (
-      <Box padding="8">
-        <Flex
-          direction="row"
-          align="center"
-          justify="center"
-          sx={{
-            bg: bg,
-            paddingY: '4',
-            position: 'sticky',
-            top: '0',
-            zIndex: '1',
-          }}
-        >
-          <Heading>Room {roomCode}</Heading>
-          <Spacer />
-          <Flex direction="row" align="center" justify="center" gap="30px">
+    <Box padding="8">
+      <Flex
+        direction="row"
+        align="center"
+        justify="center"
+        sx={{
+          bg: bg,
+          paddingY: '4',
+          position: 'sticky',
+          top: '0',
+          zIndex: '1',
+        }}
+      >
+        <Heading>Room {roomCode}</Heading>
+        <Spacer />
+        <Flex direction="row" align="center" justify="center" gap="30px">
+          <Skeleton isLoaded={!loading}>
             <Box bg={user1bg} padding="2" rounded="10">
               <Flex direction="row" align="center" justify="center" gap="10px">
                 <Icon as={HiUser} />
                 <Text>ID: {data?.participant1Code}</Text>
               </Flex>
             </Box>
+          </Skeleton>
+
+          <Skeleton isLoaded={!loading}>
             <Box bg={user2bg} padding="2" rounded="10">
               <Flex direction="row" align="center" justify="center" gap="10px">
                 <Icon as={HiUser} />
                 <Text>ID: {data?.participant2Code}</Text>
               </Flex>
             </Box>
-          </Flex>
-          <Spacer />
-          <CircularProgress value={completionRate} size="70px" thickness="10px">
-            <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
-          </CircularProgress>
+          </Skeleton>
         </Flex>
+        <Spacer />
+        <CircularProgress
+          value={completionRate}
+          size="70px"
+          thickness="10px"
+          isIndeterminate={loading}
+        >
+          <Skeleton isLoaded={!loading}>
+            <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
+          </Skeleton>
+        </CircularProgress>
+      </Flex>
 
-        <VStack spacing="20px" mt={5}>
-          {data?.messages.map((message) => (
-            <Message
-              key={message.id}
-              message={message}
-              userEmail={currentUserMail}
-              sessionName={sessionName}
-              roomCode={roomCode}
-              setTaggedMessages={setTaggedMessages}
-              backgroundColor={
-                data?.participant1Code === message.createdBy ? user1bg : user2bg
-              }
-            />
-          ))}
-        </VStack>
-      </Box>
-    )
+      <VStack spacing="20px" mt={5}>
+        {data
+          ? data?.messages.map((message) => (
+              <Message
+                key={message.id}
+                message={message}
+                userEmail={currentUserMail}
+                sessionName={sessionName}
+                roomCode={roomCode}
+                setTaggedMessages={setTaggedMessages}
+                backgroundColor={
+                  data?.participant1Code === message.createdBy
+                    ? user1bg
+                    : user2bg
+                }
+              />
+            ))
+          : Array(16)
+              .fill(0)
+              .map((_, index) => (
+                <Skeleton
+                  w="100%"
+                  height="4rem"
+                  isLoaded={!loading}
+                  key={index}
+                />
+              ))}
+      </VStack>
+    </Box>
   )
 }
 
