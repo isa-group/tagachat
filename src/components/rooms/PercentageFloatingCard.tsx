@@ -6,7 +6,7 @@ import {
 } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import { IRoom } from 'src/types/room.type'
 import calculateRoomPercentage from 'src/utils/calculateRoomPercentage'
 import FloatingCard from '../common/FloatingCard'
