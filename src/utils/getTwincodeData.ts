@@ -87,17 +87,20 @@ function cleanData(chats: Map<any, any>, sessionName: any) {
   return cleanData
 }
 
-export default function getTwincodeData(dataset: {
-  participants: ParticipantData[]
-  logs: any[]
-  session: any
-}) {
+export default function getTwincodeData(
+  dataset: {
+    participants: ParticipantData[]
+    logs: any[]
+    session: any
+  },
+  sessionName: string
+) {
   const rooms = getRooms(dataset.participants)
   const chats = getChats(rooms, dataset.logs)
-  const cleanedData = cleanData(chats, dataset.session)
+  const cleanedData = cleanData(chats, sessionName)
 
   return {
-    sessionName: dataset.session,
+    sessionName: sessionName,
     data: cleanedData,
   }
 }
