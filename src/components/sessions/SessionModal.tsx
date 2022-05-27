@@ -35,12 +35,14 @@ const SessionModal = ({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FieldValues>()
   const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
 
   const onSubmit: SubmitHandler<FieldValues> = async ({
+    url,
     sessionName,
     username,
     password,
@@ -53,33 +55,45 @@ const SessionModal = ({
       } = await axios.get('/api/sessions')
 
       if (
-        sessions.find((session: { name: any }) => session.name === sessionName)
+        url ===
+        'https://twincode-data.herokuapp.com/api/v1/datasets/standard/TWINCODE_SESSION/full'
       ) {
         toast({
-          title: 'Error',
-          description: 'Session was already added',
-          status: 'error',
+          title: 'Warning',
+          description:
+            'Please replace TWINCODE_SESSION with the name of the session',
+          status: 'warning',
           duration: 5000,
+          position: 'top-right',
           isClosable: true,
         })
-
-        onClose()
         return
       }
 
-      const { data } = await axios.get(
-        `https://twincode-data.herokuapp.com/api/v1/datasets/standard/${sessionName}/full`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Basic ' +
-              Buffer.from(username + ':' + password, 'utf8').toString('base64'),
-          },
-        }
-      )
+      if (
+        sessions.find((session: { name: any }) => session.name === sessionName)
+      ) {
+        toast({
+          title: 'Warning',
+          description: `Session ${sessionName} was already added`,
+          status: 'warning',
+          duration: 5000,
+          position: 'top-right',
+          isClosable: true,
+        })
+        return
+      }
 
-      const twincodeData = getTwincodeData(data)
+      const { data } = await axios.get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:
+            'Basic ' +
+            Buffer.from(username + ':' + password, 'utf8').toString('base64'),
+        },
+      })
+
+      const twincodeData = getTwincodeData(data, sessionName)
 
       await axios.post(`/api/sessions`, {
         name: twincodeData.sessionName,
@@ -94,9 +108,11 @@ const SessionModal = ({
         description: 'Session loaded successfully',
         status: 'success',
         duration: 5000,
+        position: 'top-right',
         isClosable: true,
       })
 
+      reset()
       onClose()
     } catch (error) {
       toast({
@@ -104,6 +120,7 @@ const SessionModal = ({
         description: (error as Error).message,
         status: 'error',
         duration: 6000,
+        position: 'top-right',
         isClosable: true,
       })
     } finally {
@@ -117,12 +134,26 @@ const SessionModal = ({
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Import a session from Twincode</ModalHeader>
+        <ModalContent maxW="50rem">
+          <ModalHeader>Import a session</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form id="sessionform" onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={6}>
+                <FormControl id="url" isInvalid={!!errors.url}>
+                  <FormLabel>Endpoint URL</FormLabel>
+                  <Input
+                    type="url"
+                    defaultValue="https://twincode-data.herokuapp.com/api/v1/datasets/standard/TWINCODE_SESSION/full"
+                    {...register('url', {
+                      required: {
+                        value: true,
+                        message: 'Please enter an url',
+                      },
+                    })}
+                  />
+                  <FormErrorMessage>{errors.url?.message}</FormErrorMessage>
+                </FormControl>
                 <FormControl id="sessionName" isInvalid={!!errors.sessionName}>
                   <FormLabel>Session name</FormLabel>
                   <Input
@@ -130,7 +161,7 @@ const SessionModal = ({
                     {...register('sessionName', {
                       required: {
                         value: true,
-                        message: 'Please enter a twincode session name',
+                        message: 'Please enter a session name',
                       },
                     })}
                   />
@@ -150,7 +181,9 @@ const SessionModal = ({
                       },
                     })}
                   />
-                  <FormErrorMessage>{errors.session?.message}</FormErrorMessage>
+                  <FormErrorMessage>
+                    {errors.username?.message}
+                  </FormErrorMessage>
                 </FormControl>
 
                 <PasswordInput
