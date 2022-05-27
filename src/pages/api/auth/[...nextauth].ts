@@ -54,6 +54,13 @@ const nextAuthOptions: NextAuthOptions = {
       if (token?.isActive) session.user.isActive = token.isActive as boolean
       return session
     },
+    async signIn({ user }) {
+      if (user.role === 'admin' || user.isActive == true) {
+        return true
+      } else {
+        throw new Error('Your account must be activated...')
+      }
+    },
   },
   pages: {
     signIn: '/login',
