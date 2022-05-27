@@ -7,10 +7,8 @@ import {
   Spacer,
   Text,
   useDisclosure,
-  useToast,
 } from '@chakra-ui/react'
 import axios from 'axios'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import FloatingCard from 'src/components/common/FloatingCard'
@@ -19,12 +17,9 @@ import SessionModal from 'src/components/sessions/SessionModal'
 
 const SessionList: FC = (props) => {
   const router = useRouter()
-  const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const [isLoading, setIsLoading] = useState(true)
-
-  const { data: session } = useSession()
 
   const [data, setData] = useState([])
   const [updateSessions, setUpdateSessions] = useState(false)
@@ -41,22 +36,6 @@ const SessionList: FC = (props) => {
 
     getData()
   }, [updateSessions])
-
-  useEffect(() => {
-    if (!session) return
-
-    if (!session?.user.isActive) {
-      toast({
-        title: "You don't have permissions to view this page",
-        description: 'Redirecting you to homepage...',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      })
-      router.push('/')
-      setIsLoading(false)
-    }
-  }, [router, session, toast])
 
   if (isLoading) return <LoadingSpinner loading={isLoading} />
 
