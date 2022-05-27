@@ -5,6 +5,7 @@ import {
   Spacer,
   Text,
   useRadioGroup,
+  useToast,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -31,6 +32,7 @@ const Message = ({
   message,
   setTaggedMessages,
 }: MessageProps) => {
+  const toast = useToast()
   const [tempFI, setTempFI] = useState<tagsFI>()
   const [tempDT, setTempDT] = useState<tagsDT>()
 
@@ -85,18 +87,26 @@ const Message = ({
           taggedMessage,
         ])
       } catch (error) {
-        console.error(getErrorMessage(error))
+        toast({
+          title: 'Error',
+          description: getErrorMessage(error),
+          status: 'error',
+          duration: 6000,
+          position: 'top-right',
+          isClosable: true,
+        })
       }
     }
 
     checkIfTagged()
   }, [
-    message,
+    message.id,
     roomCode,
     sessionName,
     setTaggedMessages,
     tempDT,
     tempFI,
+    toast,
     userEmail,
   ])
 

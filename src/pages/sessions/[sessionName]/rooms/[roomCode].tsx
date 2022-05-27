@@ -11,14 +11,12 @@ import {
   useToast,
   Icon,
   Skeleton,
-  Stack,
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import { HiUser } from 'react-icons/hi'
-import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import Message from 'src/components/rooms/Message'
 import { IMessage } from 'src/types/message.type'
 import { IRoom } from 'src/types/room.type'
@@ -48,22 +46,11 @@ const Room: FC = () => {
     if (!session?.user) return
     if (typeof block !== 'string') return
 
-    const { email, isActive } = session.user
+    const { email } = session.user
 
     if (!email) return
 
     setCurrentUserMail(email)
-
-    if (!isActive) {
-      toast({
-        title: `Your account is inactive, contact with a manager...`,
-        status: 'error',
-        duration: 6000,
-        isClosable: true,
-      })
-      router.push('/')
-      return
-    }
 
     const getData = async () => {
       try {
@@ -85,7 +72,14 @@ const Room: FC = () => {
 
         setData({ ...data, messages: blockMessages })
       } catch (error) {
-        console.error(getErrorMessage(error))
+        toast({
+          title: 'Error',
+          description: getErrorMessage(error),
+          status: 'error',
+          duration: 6000,
+          position: 'top-right',
+          isClosable: true,
+        })
       } finally {
         setLoading(false)
       }

@@ -17,6 +17,7 @@ import {
 import axios from 'axios'
 import { useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { getErrorMessage } from 'src/utils/getErrorMessage'
 import getTwincodeData from 'src/utils/getTwincodeData'
 import PasswordInput from '../auth/PasswordInput'
 import LoadingSpinner from '../common/LoadingSpinner'
@@ -117,7 +118,7 @@ const SessionModal = ({
     } catch (error) {
       toast({
         title: 'Error',
-        description: (error as Error).message,
+        description: getErrorMessage(error),
         status: 'error',
         duration: 6000,
         position: 'top-right',
