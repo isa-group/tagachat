@@ -1,3 +1,4 @@
+import { DownloadIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -14,6 +15,81 @@ import { FC, useEffect, useState } from 'react'
 import FloatingCard from 'src/components/common/FloatingCard'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import SessionModal from 'src/components/sessions/SessionModal'
+import { IMessage } from 'src/types/message.type'
+import { IRoom } from 'src/types/room.type'
+
+function convertData(rooms: IRoom[]) {
+  let headers =
+    'session,room,participant,block,messageId,reviewer,tagFI,tagDT\n'
+
+  rooms.forEach((room: IRoom) => {
+    const { sessionName, roomCode, messages } = room
+
+    messages.forEach((loopMessage: IMessage) => {
+      const { createdBy, block, id, tags } = loopMessage
+
+      for (const reviewer in tags) {
+        headers += `${sessionName},${roomCode},${createdBy},${block},${id},${reviewer},${tags[reviewer].tagFI},${tags[reviewer].tagDT}\n`
+      }
+    })
+  })
+
+  return headers
+
+  // const result = rooms.map((room: IRoom) => {
+  //   const epic = room.messages.map((message: IMessage) => {
+  //     const tags = []
+  //     for (const reviewer in message.tags) {
+  //       tags.push(
+  //         [
+  //           room.sessionName,
+  //           room.roomCode,
+  //           message.createdBy,
+  //           message.block,
+  //           message.message,
+  //           reviewer,
+  //           message.tags[reviewer].tagFI,
+  //           message.tags[reviewer].tagDT,
+  //         ].join(',')
+  //       )
+  //     }
+
+  //     return tags
+  //   })
+
+  //   return epic
+  // })
+
+  // const newData = headers + data.map((room: any[]) => room.join(',')).join('\n')
+
+  // return newData
+}
+
+async function downloadSessionData(
+  e: React.MouseEvent<HTMLButtonElement>,
+  sessionName: string
+) {
+  e.stopPropagation()
+
+  try {
+    const {
+      data: { data },
+    } = await axios.get(`/api/sessions/${sessionName}/rooms`)
+
+    const csv = convertData(data)
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `${sessionName}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 const SessionList: FC = (props) => {
   const router = useRouter()
@@ -62,6 +138,15 @@ const SessionList: FC = (props) => {
             <Text fontSize="xl" fontWeight="bold">
               {session.name}
             </Text>
+
+            <Button
+              size="xs"
+              variant="outline"
+              rightIcon={<DownloadIcon />}
+              onClick={(event) => downloadSessionData(event, session.name)}
+            >
+              Download
+            </Button>
           </FloatingCard>
         ))}
       </SimpleGrid>
