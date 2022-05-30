@@ -72,7 +72,7 @@ function LoginForm() {
   return (
     <>
       {isLoading && <LoadingSpinner loading={isLoading} />}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form aria-label="login" onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={6}>
           <FormControl id="email" isInvalid={!!errors.email}>
             <FormLabel>Email address</FormLabel>
