@@ -9,6 +9,10 @@ describe('Login page', () => {
     render(<Login />)
   })
 
+  afterAll(() => {
+    jest.clearAllMocks()
+  })
+
   it('renders a heading', () => {
     const heading = screen.getByRole('heading', {
       name: /Log In/i,
@@ -19,5 +23,10 @@ describe('Login page', () => {
   it('renders a form', () => {
     const form = screen.getByRole('form', { name: /login/i })
     expect(form).toBeInTheDocument()
+  })
+
+  it('renders login page unchanged', () => {
+    const { container } = render(<Login />)
+    expect(container).toMatchSnapshot()
   })
 })
