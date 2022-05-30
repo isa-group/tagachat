@@ -27,13 +27,12 @@ function LoginForm() {
   } = useForm<FieldValues>()
 
   useEffect(() => {
-    getSession().then((session) => {
-      if (session) {
-        router.replace('/')
-      } else {
-        setIsLoading(false)
-      }
-    })
+    const checkSession = async () => {
+      const session = await getSession()
+      if (session) router.push('/sessions')
+    }
+
+    checkSession()
   }, [router])
 
   const onSubmit: SubmitHandler<FieldValues> = async ({ email, password }) => {
