@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login page renders login page unchanged 1`] = `
+<div>
+  <div
+    class="css-12766lr"
+  >
+    <div
+      class="css-bmyd6m"
+    >
+      <a
+        class="chakra-link css-0"
+        href="/"
+      >
+        <h2
+          class="chakra-heading css-16dseq3"
+        >
+          tag-a-chat
+        </h2>
+      </a>
+      <button
+        class="chakra-button css-5c2176"
+        type="button"
+      >
+        <svg
+          class="chakra-icon css-onkibi"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <g
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="5"
+            />
+            <path
+              d="M12 1v2"
+            />
+            <path
+              d="M12 21v2"
+            />
+            <path
+              d="M4.22 4.22l1.42 1.42"
+            />
+            <path
+              d="M18.36 18.36l1.42 1.42"
+            />
+            <path
+              d="M1 12h2"
+            />
+            <path
+              d="M21 12h2"
+            />
+            <path
+              d="M4.22 19.78l1.42-1.42"
+            />
+            <path
+              d="M18.36 5.64l1.42-1.42"
+            />
+          </g>
+        </svg>
+      </button>
+    </div>
+    <div
+      class="css-1kthhmo"
+    >
+      <h2
+        class="chakra-heading css-19gto3v"
+      >
+        Log In
+      </h2>
+      <p
+        class="chakra-text css-jek39d"
+      >
+        <span
+          class="chakra-text css-0"
+        >
+          Don't have an account? 
+        </span>
+        <a
+          class="chakra-link css-1e3tj"
+          href="/signup"
+        >
+          Sign Up!
+        </a>
+      </p>
+      <div
+        class="css-sti0eu"
+      >
+        <form
+          aria-label="login"
+        >
+          <div
+            class="chakra-stack css-16voevi"
+          >
+            <div
+              class="chakra-form-control css-0"
+              role="group"
+            >
+              <label
+                class="chakra-form__label css-uvho5g"
+                for="email"
+                id="email-label"
+              >
+                Email address
+              </label>
+              <input
+                class="chakra-input css-0"
+                id="email"
+                name="email"
+                type="email"
+              />
+            </div>
+            <div
+              class="chakra-form-control css-0"
+              role="group"
+            >
+              <div
+                class="css-gg4vpm"
+              >
+                <label
+                  class="chakra-form__label css-uvho5g"
+                  for="password"
+                  id="password-label"
+                >
+                  Password
+                </label>
+                <a
+                  class="chakra-link css-19j713b"
+                  href="/reset-password"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+              <div
+                class="chakra-input__group css-4302v8"
+              >
+                <input
+                  autocomplete="current-password"
+                  class="chakra-input css-1n0hj84"
+                  id="password"
+                  name="password"
+                  type="password"
+                />
+                <div
+                  class="chakra-input__right-element css-dp9r5f"
+                >
+                  <button
+                    aria-label="Reveal password"
+                    class="chakra-button css-nru72g"
+                    type="button"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 20 20"
+                      width="1em"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10 12a2 2 0 100-4 2 2 0 000 4z"
+                      />
+                      <path
+                        clip-rule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                        fill-rule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <button
+              class="chakra-button css-5c2176"
+              type="submit"
+            >
+              Log In
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+`;

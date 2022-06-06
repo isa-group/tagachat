@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "start-server-and-test start 3000 cypress",
+    "test:e2e:ci": "start-server-and-test start 3000 cypress:headless",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run --browser chrome --headless"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.7",
@@ -26,12 +33,20 @@
     "react-icons": "^4.3.1"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^8.0.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.5",
     "@types/bcryptjs": "^2.4.2",
     "@types/node": "17.0.21",
     "@types/react": "17.0.40",
+    "cypress": "^10.0.2",
     "eslint": "8.11.0",
     "eslint-config-next": "12.1.0",
     "eslint-config-prettier": "^8.5.0",
+    "jest": "^28.1.0",
+    "jest-environment-jsdom": "^28.1.0",
+    "msw": "^0.42.0",
+    "start-server-and-test": "^1.14.0",
     "typescript": "4.6.2"
   }
 }

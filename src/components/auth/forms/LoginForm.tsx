@@ -27,13 +27,12 @@ function LoginForm() {
   } = useForm<FieldValues>()
 
   useEffect(() => {
-    getSession().then((session) => {
-      if (session) {
-        router.replace('/')
-      } else {
-        setIsLoading(false)
-      }
-    })
+    const checkSession = async () => {
+      const session = await getSession()
+      if (session) router.push('/sessions')
+    }
+
+    checkSession()
   }, [router])
 
   const onSubmit: SubmitHandler<FieldValues> = async ({ email, password }) => {
@@ -73,7 +72,7 @@ function LoginForm() {
   return (
     <>
       {isLoading && <LoadingSpinner loading={isLoading} />}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form aria-label="login" onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={6}>
           <FormControl id="email" isInvalid={!!errors.email}>
             <FormLabel>Email address</FormLabel>

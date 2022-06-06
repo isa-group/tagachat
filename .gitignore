@@ -36,3 +36,15 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Cypress generated files #
+######################
+cypress.env.json
+cypress.meta.json
+cypress/logs/
+cypress/videos/*
+cypress/screenshots/*
+cypress/e2e/_generated/*
+cypress/data/migration/generated/*.csv
+cypress/fixtures/example.json
+cypress/build/*
