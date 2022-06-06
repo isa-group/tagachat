@@ -9,7 +9,11 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "start-server-and-test start 3000 cypress",
+    "test:e2e:ci": "start-server-and-test start 3000 cypress:headless",
+    "cypress": "cypress open",
+    "cypress:headless": "cypress run --browser chrome --headless"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.7",
@@ -42,6 +46,7 @@
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
     "msw": "^0.42.0",
+    "start-server-and-test": "^1.14.0",
     "typescript": "4.6.2"
   }
 }
