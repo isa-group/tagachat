@@ -1,4 +1,3 @@
-// @ts-nocheck
 import axios from 'axios'
 import { IMessage } from 'src/types/message.type'
 import { IRoom } from 'src/types/room.type'
@@ -39,19 +38,19 @@ function convertData(rooms: IRoom[]) {
       'o',
     ].join(',') + '\n'
 
-  const ultimateEpicData = []
+  const taggedMessages: string[] = []
 
   rooms.forEach((room: IRoom) => {
     const { sessionName, roomCode, messages } = room
 
-    const flattenedValues = messages
+    const flattenedMessages = messages
       .map((loopMessage: IMessage) => {
         const { createdBy, block, tags } = loopMessage
 
         if (tags) {
           return Object.entries(tags).map(
             ([reviewer, tags]) =>
-              new Map(
+              new Map<string, string | number>(
                 Object.entries({
                   sessionName,
                   roomCode,
@@ -70,33 +69,41 @@ function convertData(rooms: IRoom[]) {
       })
       .flat()
 
-    const groupedByReviewer = flattenedValues.reduce((acc, curr) => {
-      const reviewer = curr.get('reviewer')
-      const createdBy = curr.get('createdBy')
-      const block = curr.get('block')
+    const groupedByReviewer = flattenedMessages.reduce(
+      (acc, curr) => {
+        const reviewer = curr.get('reviewer') as string
+        const createdBy = curr.get('createdBy') as number
+        const block = curr.get('block') as number
 
-      if (!acc[reviewer]) {
-        acc[reviewer] = {}
+        if (!acc[reviewer]) {
+          acc[reviewer] = {}
+        }
+
+        if (!acc[reviewer][createdBy]) {
+          acc[reviewer][createdBy] = {}
+        }
+
+        if (!acc[reviewer][createdBy][block]) {
+          acc[reviewer][createdBy][block] = []
+        }
+
+        acc[reviewer][createdBy][block].push(curr)
+
+        return acc
+      },
+      {} as {
+        [reviewer: string]: {
+          [createdBy: number]: {
+            [block: number]: Map<string, string | number>[]
+          }
+        }
       }
-
-      if (!acc[reviewer][createdBy]) {
-        acc[reviewer][createdBy] = {}
-      }
-
-      if (!acc[reviewer][createdBy][block]) {
-        acc[reviewer][createdBy][block] = []
-      }
-
-      acc[reviewer][createdBy][block].push(curr)
-
-      return acc
-    }, {})
+    )
 
     Object.values(groupedByReviewer).forEach((createdBy) => {
       Object.values(createdBy).forEach((blocks) => {
         Object.values(blocks).forEach((messages) => {
           const tagCount = new Map()
-
           messages.forEach((message) => {
             const fi = message.get('tagFI')
             const dt = message.get('tagDT')
@@ -105,19 +112,18 @@ function convertData(rooms: IRoom[]) {
             if (dt) tagCount.set(dt, (tagCount.get(dt) || 0) + 1)
           })
 
-          const newMap = new Map([...messages[0], ...tagCount])
-          newMap.delete('tagFI')
-          newMap.delete('tagDT')
+          const taggedMessage = new Map([...messages[0], ...tagCount])
+          taggedMessage.delete('tagFI')
+          taggedMessage.delete('tagDT')
 
-          const mapIntoArray = Array.from(newMap.values())
-          const arrayIntoText = mapIntoArray.join(',')
-          ultimateEpicData.push(arrayIntoText)
+          const mapIntoString = Array.from(taggedMessage.values()).join(',')
+          taggedMessages.push(mapIntoString)
         })
       })
     })
   })
 
-  const csv = headers + ultimateEpicData.join('\n')
+  const csv = headers + taggedMessages.join('\n')
   return csv
 }
 
