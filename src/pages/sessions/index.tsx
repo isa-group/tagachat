@@ -10,6 +10,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import FloatingCard from 'src/components/common/FloatingCard'
@@ -25,6 +26,8 @@ const SessionList: FC = (props) => {
 
   const [data, setData] = useState([])
   const [updateSessions, setUpdateSessions] = useState(false)
+
+  const { data: session } = useSession()
 
   useEffect(() => {
     const getData = async () => {
@@ -46,7 +49,10 @@ const SessionList: FC = (props) => {
       <HStack>
         <Heading>Sessions</Heading>
         <Spacer />
-        <Button onClick={onOpen}>Import Session</Button>
+
+        {session?.user?.role === 'admin' && (
+          <Button onClick={onOpen}>Import Session</Button>
+        )}
       </HStack>
 
       <SessionModal
