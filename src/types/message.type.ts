@@ -8,8 +8,8 @@ export type IMessage = {
   block: 1 | 2
   tags: {
     [userEmail: string]: {
-      tagFI?: tagsFI
-      tagDT?: tagsDT
+      tagFI: tagsFI
+      tagDT: tagsDT
     }
   }
 }

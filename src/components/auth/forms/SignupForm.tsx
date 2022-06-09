@@ -70,7 +70,7 @@ function SignupForm() {
       await createUser({ email, name, password })
 
       toast({
-        title: `We'll send you a confirmation email shortly!`,
+        title: 'Contact with an administrator to activate your account',
         status: 'info',
         duration: 6000,
         isClosable: true,
