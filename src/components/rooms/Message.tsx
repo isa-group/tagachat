@@ -124,6 +124,10 @@ const Message = ({
 
         <Spacer />
 
+        <Text fontSize="xs" mr="1rem">
+          {message.timestamp}
+        </Text>
+
         <ButtonGroup isAttached {...getRootFIProps()}>
           {tagFIOptions.map((value) => (
             <RadioCard
