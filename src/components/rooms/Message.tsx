@@ -129,9 +129,11 @@ const Message = ({
       rounded="10"
     >
       <Flex height="100%" direction="row" align="center" gap="15px">
-        {tags && Object.keys(tags).includes(session?.user?.email ?? '') && (
-          <TagComparison tags={tags} />
-        )}
+        {tags &&
+          (session?.user.role === 'admin' ||
+            Object.keys(tags).includes(session?.user?.email ?? '')) && (
+            <TagComparison tags={tags} />
+          )}
 
         <Text>{message.message}</Text>
 
