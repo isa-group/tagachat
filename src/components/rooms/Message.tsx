@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IMessage } from 'src/types/message.type'
 import { tagsDT, tagsFI } from 'src/types/tags.type'
+import { UserRoles } from 'src/utils/enums/userRoles'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import RadioCard from '../common/RadioCard'
@@ -129,12 +130,6 @@ const Message = ({
       rounded="10"
     >
       <Flex height="100%" direction="row" align="center" gap="15px">
-        {tags &&
-          (session?.user.role === 'admin' ||
-            Object.keys(tags).includes(session?.user?.email ?? '')) && (
-            <TagComparison tags={tags} />
-          )}
-
         <Text>{message.message}</Text>
 
         <Spacer />
@@ -143,25 +138,35 @@ const Message = ({
           {message.timestamp}
         </Text>
 
-        <ButtonGroup isAttached {...getRootFIProps()}>
-          {tagFIOptions.map((value) => (
-            <RadioCard
-              key={value}
-              tag={value}
-              {...getRadioFIProps({ value })}
-            />
-          ))}
-        </ButtonGroup>
+        {session?.user.role === UserRoles.REVIEWER && (
+          <>
+            <ButtonGroup isAttached {...getRootFIProps()}>
+              {tagFIOptions.map((value) => (
+                <RadioCard
+                  key={value}
+                  tag={value}
+                  {...getRadioFIProps({ value })}
+                />
+              ))}
+            </ButtonGroup>
 
-        <ButtonGroup isAttached {...getRootDTProps()}>
-          {tagDTOptions.map((value) => (
-            <RadioCard
-              key={value}
-              tag={value}
-              {...getRadioDTProps({ value })}
-            />
-          ))}
-        </ButtonGroup>
+            <ButtonGroup isAttached {...getRootDTProps()}>
+              {tagDTOptions.map((value) => (
+                <RadioCard
+                  key={value}
+                  tag={value}
+                  {...getRadioDTProps({ value })}
+                />
+              ))}
+            </ButtonGroup>
+          </>
+        )}
+
+        {tags &&
+          (session?.user.role === UserRoles.ADMIN ||
+            Object.keys(tags).includes(session?.user?.email ?? '')) && (
+            <TagComparison tags={tags} />
+          )}
       </Flex>
     </Box>
   )
