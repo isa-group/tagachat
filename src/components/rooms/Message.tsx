@@ -8,12 +8,14 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { IMessage } from 'src/types/message.type'
 import { tagsDT, tagsFI } from 'src/types/tags.type'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 import { tagDTOptions, tagFIOptions } from 'src/utils/tagOptions'
 import RadioCard from '../common/RadioCard'
+import TagComparison from './TagComparison'
 
 type MessageProps = {
   backgroundColor: string
@@ -33,8 +35,13 @@ const Message = ({
   setTaggedMessages,
 }: MessageProps) => {
   const toast = useToast()
+
+  const [tags, setTags] = useState(message.tags)
+
   const [tempFI, setTempFI] = useState<tagsFI>()
   const [tempDT, setTempDT] = useState<tagsDT>()
+
+  const { data: session } = useSession()
 
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
     useRadioGroup({
@@ -75,6 +82,8 @@ const Message = ({
             },
           },
         }
+
+        setTags(taggedMessage.tags)
 
         await axios.patch(`/api/sessions/${sessionName}/rooms/${roomCode}`, {
           taggedMessage,
@@ -120,6 +129,10 @@ const Message = ({
       rounded="10"
     >
       <Flex height="100%" direction="row" align="center" gap="15px">
+        {tags && Object.keys(tags).includes(session?.user?.email ?? '') && (
+          <TagComparison tags={tags} />
+        )}
+
         <Text>{message.message}</Text>
 
         <Spacer />
