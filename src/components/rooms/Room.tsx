@@ -20,6 +20,7 @@ import { HiUser } from 'react-icons/hi'
 import Message from 'src/components/rooms/Message'
 import { IMessage } from 'src/types/message.type'
 import { IRoom } from 'src/types/room.type'
+import { UserRoles } from 'src/utils/enums/userRoles'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 
 const Room: FC = () => {
@@ -132,17 +133,21 @@ const Room: FC = () => {
             </Box>
           </Skeleton>
         </Flex>
-        <Spacer />
-        <CircularProgress
-          value={completionRate}
-          size="70px"
-          thickness="10px"
-          isIndeterminate={loading}
-        >
-          <Skeleton isLoaded={!loading}>
-            <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
-          </Skeleton>
-        </CircularProgress>
+        {session?.user.role === UserRoles.REVIEWER && (
+          <>
+            <Spacer />
+            <CircularProgress
+              value={completionRate}
+              size="70px"
+              thickness="10px"
+              isIndeterminate={loading}
+            >
+              <Skeleton isLoaded={!loading}>
+                <CircularProgressLabel>{completionRate}%</CircularProgressLabel>
+              </Skeleton>
+            </CircularProgress>
+          </>
+        )}
       </Flex>
 
       <VStack spacing="20px" mt={5}>
