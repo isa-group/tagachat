@@ -8,9 +8,9 @@ import Link from 'next/link'
 
 type AuthTextProps = {
   headingText: string
-  helperText: string
-  linkText: string
-  linkHref: string
+  helperText?: string
+  linkText?: string
+  linkHref?: string
 }
 
 const AuthText = ({
