@@ -53,6 +53,7 @@ function LoginForm() {
           status: 'info',
           duration: 6000,
           isClosable: true,
+          position: 'top-right',
         })
 
         router.replace('/sessions')
