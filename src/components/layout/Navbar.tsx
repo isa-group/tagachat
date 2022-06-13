@@ -24,11 +24,14 @@ import { signOut, useSession } from 'next-auth/react'
 import ThemeButton from '../common/ThemeButton'
 import LoadingSpinner from '../common/LoadingSpinner'
 import { ActiveThemedLink } from '../common/ActiveThemeLink'
+import { UserRoles } from 'src/utils/enums/userRoles'
 
-const NavLinks = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
+const NavLinks = ({ role }: { role: string }) => (
   <>
-    {isLoggedIn && (
-      <ActiveThemedLink href="/sessions">Sessions</ActiveThemedLink>
+    <ActiveThemedLink href="/sessions">Sessions</ActiveThemedLink>
+
+    {role === UserRoles.ADMIN && (
+      <ActiveThemedLink href="/admin">Admin</ActiveThemedLink>
     )}
   </>
 )
@@ -42,9 +45,7 @@ const Navbar: FC = (props) => {
 
   return (
     <>
-      {status === 'loading' && (
-        <LoadingSpinner loading={status === 'loading'} />
-      )}
+      {status && <LoadingSpinner loading={status === 'loading'} />}
       <Box as="nav" bg={brandColors} color="white" px="4" {...props}>
         <Flex h="14" alignItems="center" justifyContent="space-between">
           <IconButton
@@ -69,7 +70,7 @@ const Navbar: FC = (props) => {
             </Link>
 
             <HStack spacing="10" display={{ base: 'none', md: 'flex' }}>
-              <NavLinks isLoggedIn={status === 'authenticated'} />
+              <NavLinks role={session?.user.role ?? ''} />
             </HStack>
           </HStack>
 
@@ -137,7 +138,7 @@ const Navbar: FC = (props) => {
         {isOpen && (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack spacing={4}>
-              <NavLinks isLoggedIn={!!session} />
+              <NavLinks role={session?.user.role ?? ''} />
             </Stack>
           </Box>
         )}
