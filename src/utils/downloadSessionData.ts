@@ -115,6 +115,23 @@ function convertData(rooms: IRoom[]) {
       }
     )
 
+    const messageCountPerBlockAndParticipant = messages.reduce(
+      (acc, message: IMessage) => {
+        const { block, createdBy } = message
+        if (acc.has(block)) {
+          if (acc.get(block).has(createdBy)) {
+            acc.get(block).set(createdBy, acc.get(block).get(createdBy) + 1)
+          } else {
+            acc.get(block).set(createdBy, 1)
+          }
+        } else {
+          acc.set(block, new Map([[createdBy, 1]]))
+        }
+        return acc
+      },
+      new Map()
+    )
+
     Object.values(groupedByReviewer).forEach((block) => {
       Object.values(block).forEach((createdBy) => {
         const messagesByBlock: Map<any, any>[] = []
@@ -150,9 +167,15 @@ function convertData(rooms: IRoom[]) {
         messagesByBlock.forEach((message) => {
           message.forEach((value, key) => {
             if (tagFIOptions.includes(key) || tagDTOptions.includes(key)) {
+              const messageCount = messageCountPerBlockAndParticipant
+                .get(message.get('block'))
+                .get(message.get('createdBy'))
+
               message.set(
                 `${key}_r`,
-                !totalTagCount.get(key) ? 0 : value / totalTagCount.get(key)
+                ((!totalTagCount.get(key) ? 0 : value) / messageCount).toFixed(
+                  4
+                )
               )
             }
           })
