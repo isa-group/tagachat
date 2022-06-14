@@ -8,7 +8,7 @@ const headers =
     'session',
     'room',
     'participant',
-    'block',
+    'time',
     'reviewer',
     'f',
     'i',
@@ -182,7 +182,11 @@ function convertData(rooms: IRoom[]) {
         })
 
         const finalMessage = messagesByBlock
-          .map((message) => Array.from(message.values()).join(','))
+          .map((message) => {
+            const messageArray = Array.from(message.values())
+            messageArray[3] = 't' + messageArray[3]
+            return messageArray.join(',')
+          })
           .join('\n')
 
         taggedMessages.push(finalMessage)
