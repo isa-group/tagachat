@@ -77,7 +77,9 @@ function getCohenKappa(rooms: IRoom[]) {
         (t) => t === secondReviewerTags.tagFI
       )
 
-      fiArray[tagFIReviewer1][tagFIReviewer2] += 1
+      if (tagFIReviewer1 !== -1 && tagFIReviewer2 !== -1) {
+        fiArray[tagFIReviewer1][tagFIReviewer2]++
+      }
 
       const tagDTReviewer1 = tagDTOptions.findIndex(
         (t) => t === firstReviewerTags.tagDT
@@ -87,7 +89,9 @@ function getCohenKappa(rooms: IRoom[]) {
         (t) => t === secondReviewerTags.tagDT
       )
 
-      dtArray[tagDTReviewer1][tagDTReviewer2] += 1
+      if (tagDTReviewer1 !== -1 && tagDTReviewer2 !== -1) {
+        dtArray[tagDTReviewer1][tagDTReviewer2]++
+      }
     })
   })
 
