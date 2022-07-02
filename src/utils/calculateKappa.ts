@@ -116,8 +116,7 @@ export async function calculateKappa(
       data: { data },
     } = await axios.get(`/api/sessions/${sessionName}/rooms`)
 
-    const taggedMessages = getCohenKappa(data)
-    console.log(taggedMessages)
+    return getCohenKappa(data)
   } catch (error) {
     console.error(error)
   }

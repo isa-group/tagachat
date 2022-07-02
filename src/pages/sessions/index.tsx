@@ -1,4 +1,4 @@
-import { DownloadIcon, InfoOutlineIcon } from '@chakra-ui/icons'
+import { DownloadIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -14,9 +14,9 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import FloatingCard from 'src/components/common/FloatingCard'
+import KappaButton from 'src/components/common/KappaButton'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import SessionModal from 'src/components/sessions/SessionModal'
-import { calculateKappa } from 'src/utils/calculateKappa'
 import { downloadSessionData } from 'src/utils/downloadSessionData'
 
 const SessionList: FC = (props) => {
@@ -84,14 +84,7 @@ const SessionList: FC = (props) => {
 
               <Spacer />
 
-              <Button
-                size="xs"
-                variant="ghost"
-                leftIcon={<InfoOutlineIcon />}
-                onClick={(event) => calculateKappa(event, session.name)}
-              >
-                κ
-              </Button>
+              <KappaButton sessionName={session.name} />
             </HStack>
           </FloatingCard>
         ))}
