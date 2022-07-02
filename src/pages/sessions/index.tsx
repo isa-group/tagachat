@@ -1,4 +1,4 @@
-import { DownloadIcon } from '@chakra-ui/icons'
+import { DownloadIcon, InfoOutlineIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -16,6 +16,7 @@ import { FC, useEffect, useState } from 'react'
 import FloatingCard from 'src/components/common/FloatingCard'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import SessionModal from 'src/components/sessions/SessionModal'
+import { calculateKappa } from 'src/utils/calculateKappa'
 import { downloadSessionData } from 'src/utils/downloadSessionData'
 
 const SessionList: FC = (props) => {
@@ -71,14 +72,27 @@ const SessionList: FC = (props) => {
               {session.name}
             </Text>
 
-            <Button
-              size="xs"
-              variant="outline"
-              rightIcon={<DownloadIcon />}
-              onClick={(event) => downloadSessionData(event, session.name)}
-            >
-              Download
-            </Button>
+            <HStack>
+              <Button
+                size="xs"
+                variant="outline"
+                rightIcon={<DownloadIcon />}
+                onClick={(event) => downloadSessionData(event, session.name)}
+              >
+                Download
+              </Button>
+
+              <Spacer />
+
+              <Button
+                size="xs"
+                variant="ghost"
+                leftIcon={<InfoOutlineIcon />}
+                onClick={(event) => calculateKappa(event, session.name)}
+              >
+                κ
+              </Button>
+            </HStack>
           </FloatingCard>
         ))}
       </SimpleGrid>
