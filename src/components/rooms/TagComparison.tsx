@@ -44,9 +44,11 @@ const TagComparison = ({ tags }: TagComparisonProps) => {
           <TableContainer overflowX="hidden">
             <Table size="sm">
               <Thead>
-                <Th>Reviewer</Th>
-                <Th>FI</Th>
-                <Th>DT</Th>
+                <Tr>
+                  <Th>Reviewer</Th>
+                  <Th>FI</Th>
+                  <Th>DT</Th>
+                </Tr>
               </Thead>
               <Tbody>
                 {Object.entries(tags).map(([userEmail, tags]) => (
