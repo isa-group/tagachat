@@ -112,7 +112,10 @@ const Room: FC = () => {
           zIndex: '1',
         }}
       >
-        <Heading>Room {roomCode}</Heading>
+        <VStack align="start">
+          <Heading>Room {roomCode}</Heading>
+          <Text fontSize="2xl">Block {block}</Text>
+        </VStack>
         <Spacer />
         <Flex direction="row" align="center" justify="center" gap="30px">
           <Skeleton isLoaded={!loading}>
