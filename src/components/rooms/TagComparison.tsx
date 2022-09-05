@@ -38,10 +38,10 @@ const TagComparison = ({ tags }: TagComparisonProps) => {
           <WarningIcon color="yellow.400" />
         )}
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent minW={{ base: '100%', lg: 'max-content' }}>
         <PopoverArrow />
         <PopoverBody>
-          <TableContainer overflowX="hidden">
+          <TableContainer>
             <Table size="sm">
               <Thead>
                 <Tr>
