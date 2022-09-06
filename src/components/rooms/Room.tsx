@@ -22,6 +22,7 @@ import { IMessage } from 'src/types/message.type'
 import { IRoom } from 'src/types/room.type'
 import { UserRoles } from 'src/utils/enums/userRoles'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
+import KappaButton from '../common/KappaButton'
 
 const Room: FC = () => {
   const router = useRouter()
@@ -116,7 +117,22 @@ const Room: FC = () => {
           <Heading>Room {roomCode}</Heading>
           <Text fontSize="2xl">Block {block}</Text>
         </VStack>
+
         <Spacer />
+
+        {sessionName &&
+          roomCode &&
+          typeof sessionName === 'string' &&
+          typeof roomCode === 'string' && (
+            <KappaButton
+              sessionName={sessionName}
+              roomCode={roomCode}
+              buttonSize="md"
+            />
+          )}
+
+        <Spacer />
+
         <Flex direction="row" align="center" justify="center" gap="30px">
           <Skeleton isLoaded={!loading}>
             <Box bg={user1bg} padding="2" rounded="10">
@@ -136,6 +152,7 @@ const Room: FC = () => {
             </Box>
           </Skeleton>
         </Flex>
+
         {session?.user.role === UserRoles.REVIEWER && (
           <>
             <Spacer />

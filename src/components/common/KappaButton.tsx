@@ -1,15 +1,19 @@
 import { QuestionOutlineIcon } from '@chakra-ui/icons'
 import { Button } from '@chakra-ui/react'
 import { MouseEvent, useState } from 'react'
-import { calculateKappa } from 'src/utils/calculateKappa'
+import { calculateKappa } from 'src/utils/getCohenKappa'
+
+type KappaButtonProps = {
+  sessionName: string
+  roomCode?: string
+  buttonSize: string
+}
 
 const KappaButton = ({
   sessionName,
+  roomCode,
   buttonSize = 'xs',
-}: {
-  sessionName: string
-  buttonSize: string
-}) => {
+}: KappaButtonProps) => {
   const [text, setText] = useState('Kappa (κ)')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -17,7 +21,7 @@ const KappaButton = ({
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
   ) {
     setIsLoading(true)
-    const kappa = await calculateKappa(e, sessionName)
+    const kappa = await calculateKappa(e, sessionName, roomCode)
 
     setText(`FI=${kappa?.fiCohen}; DT=${kappa?.dtCohen}`)
     setIsLoading(false)
