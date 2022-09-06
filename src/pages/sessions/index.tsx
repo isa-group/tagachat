@@ -84,7 +84,7 @@ const SessionList: FC = (props) => {
 
               <Spacer />
 
-              <KappaButton sessionName={session.name} />
+              <KappaButton sessionName={session.name} buttonSize="xs" />
             </HStack>
           </FloatingCard>
         ))}
