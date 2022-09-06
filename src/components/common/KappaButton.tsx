@@ -1,5 +1,5 @@
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { Button, ButtonProps } from '@chakra-ui/react'
+import { QuestionOutlineIcon } from '@chakra-ui/icons'
+import { Button } from '@chakra-ui/react'
 import { MouseEvent, useState } from 'react'
 import { calculateKappa } from 'src/utils/calculateKappa'
 
@@ -10,7 +10,7 @@ const KappaButton = ({
   sessionName: string
   buttonSize: string
 }) => {
-  const [text, setText] = useState('κ')
+  const [text, setText] = useState('Kappa (κ)')
   const [isLoading, setIsLoading] = useState(false)
 
   async function handleClick(
@@ -27,8 +27,8 @@ const KappaButton = ({
     <Button
       isLoading={isLoading}
       size={buttonSize}
-      variant="ghost"
-      leftIcon={<InfoOutlineIcon />}
+      variant="outline"
+      rightIcon={<QuestionOutlineIcon />}
       onClick={(e) => handleClick(e)}
     >
       {text}

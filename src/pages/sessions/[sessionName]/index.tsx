@@ -44,13 +44,10 @@ const Session = () => {
     <Box padding="3rem">
       <HStack>
         <Heading>Session: {sessionName}</Heading>
-        <Spacer />
         {typeof sessionName === 'string' && (
           <>
-            <KappaButton sessionName={sessionName} buttonSize="md" />
-
             <Spacer />
-
+            <KappaButton sessionName={sessionName} buttonSize="md" />
             <Button
               variant="outline"
               rightIcon={<DownloadIcon />}
