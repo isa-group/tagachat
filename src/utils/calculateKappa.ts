@@ -1,9 +1,4 @@
-import axios from 'axios'
-import { IMessage } from 'src/types/message.type'
-import { IRoom } from 'src/types/room.type'
-import { tagDTOptions, tagFIOptions } from './tagOptions'
-
-function createSquareMatrix(itemLength: number) {
+export function createSquareMatrix(itemLength: number) {
   const array = new Array(itemLength)
 
   for (let i = 0; i < itemLength; i++) {
@@ -17,7 +12,7 @@ function createSquareMatrix(itemLength: number) {
   return array
 }
 
-function calculateObservedAgreement(array: any[]) {
+export function calculateObservedAgreement(array: any[]) {
   const total = array.reduce((acc, row) => {
     return acc + row.reduce((acc: any, val: any) => acc + val, 0)
   }, 0)
@@ -31,7 +26,7 @@ function calculateObservedAgreement(array: any[]) {
   return observedAgreement
 }
 
-function calculateChanceAgreement(array: any[]) {
+export function calculateChanceAgreement(array: any[]) {
   const total = array.reduce((acc, row) => {
     return acc + row.reduce((acc: any, val: any) => acc + val, 0)
   }, 0)
@@ -45,7 +40,7 @@ function calculateChanceAgreement(array: any[]) {
   return chanceAgreement
 }
 
-function calculateCohenKappa(
+export function calculateCohenKappa(
   observedAgreement: number,
   chanceAgreement: number
 ) {
@@ -53,75 +48,4 @@ function calculateCohenKappa(
     (observedAgreement - chanceAgreement) / (1 - chanceAgreement)
 
   return Math.round(cohenKappa * 100) / 100
-}
-
-function getCohenKappa(rooms: IRoom[]) {
-  const fiArray = createSquareMatrix(tagFIOptions.length)
-  const dtArray = createSquareMatrix(tagDTOptions.length)
-
-  rooms.forEach((room: IRoom) => {
-    const twoRatersMessages = room.messages.filter(
-      ({ tags }: IMessage) => tags && Object.keys(tags)?.length === 2
-    )
-
-    twoRatersMessages.forEach((message: IMessage) => {
-      const [firstReviewerTags, secondReviewerTags] = Object.values(
-        message.tags
-      )
-
-      const tagFIReviewer1 = tagFIOptions.findIndex(
-        (t) => t === firstReviewerTags.tagFI
-      )
-
-      const tagFIReviewer2 = tagFIOptions.findIndex(
-        (t) => t === secondReviewerTags.tagFI
-      )
-
-      if (tagFIReviewer1 !== -1 && tagFIReviewer2 !== -1) {
-        fiArray[tagFIReviewer1][tagFIReviewer2]++
-      }
-
-      const tagDTReviewer1 = tagDTOptions.findIndex(
-        (t) => t === firstReviewerTags.tagDT
-      )
-
-      const tagDTReviewer2 = tagDTOptions.findIndex(
-        (t) => t === secondReviewerTags.tagDT
-      )
-
-      if (tagDTReviewer1 !== -1 && tagDTReviewer2 !== -1) {
-        dtArray[tagDTReviewer1][tagDTReviewer2]++
-      }
-    })
-  })
-
-  const fiObservedAgreement = calculateObservedAgreement(fiArray)
-  const fiChanceAgreement = calculateChanceAgreement(fiArray)
-  const fiCohen = calculateCohenKappa(fiObservedAgreement, fiChanceAgreement)
-
-  const dtObservedAgreement = calculateObservedAgreement(dtArray)
-  const dtChanceAgreement = calculateChanceAgreement(dtArray)
-  const dtCohen = calculateCohenKappa(dtObservedAgreement, dtChanceAgreement)
-
-  return {
-    fiCohen,
-    dtCohen,
-  }
-}
-
-export async function calculateKappa(
-  e: React.MouseEvent<HTMLButtonElement>,
-  sessionName: string
-) {
-  e.stopPropagation()
-
-  try {
-    const {
-      data: { data },
-    } = await axios.get(`/api/sessions/${sessionName}/rooms`)
-
-    return getCohenKappa(data)
-  } catch (error) {
-    console.error(error)
-  }
 }
