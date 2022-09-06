@@ -38,27 +38,28 @@ const Session = () => {
     getData()
   }, [router.isReady, sessionName])
 
-  if (typeof sessionName !== 'string') return
   if (isLoading) return <LoadingSpinner loading={isLoading} />
 
   return (
     <Box padding="3rem">
       <HStack>
         <Heading>Session: {sessionName}</Heading>
-
         <Spacer />
+        {typeof sessionName === 'string' && (
+          <>
+            <KappaButton sessionName={sessionName} buttonSize="md" />
 
-        <KappaButton sessionName={sessionName} buttonSize="md" />
+            <Spacer />
 
-        <Spacer />
-
-        <Button
-          variant="outline"
-          rightIcon={<DownloadIcon />}
-          onClick={(event) => downloadSessionData(event, sessionName)}
-        >
-          Download
-        </Button>
+            <Button
+              variant="outline"
+              rightIcon={<DownloadIcon />}
+              onClick={(event) => downloadSessionData(event, sessionName)}
+            >
+              Download
+            </Button>
+          </>
+        )}
       </HStack>
 
       <Grid
