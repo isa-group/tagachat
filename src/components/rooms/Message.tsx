@@ -129,7 +129,12 @@ const Message = ({
       bg={backgroundColor}
       rounded="10"
     >
-      <Flex height="100%" direction="row" align="center" gap="15px">
+      <Flex
+        height="100%"
+        direction={{ base: 'column', xl: 'row' }}
+        align="center"
+        gap="15px"
+      >
         <Text>{message.message}</Text>
 
         <Spacer />
@@ -164,9 +169,8 @@ const Message = ({
 
         {tags &&
           (session?.user.role === UserRoles.ADMIN ||
-            Object.keys(tags).includes(session?.user?.email ?? '')) && (
-            <TagComparison tags={tags} />
-          )}
+            Object.keys(tags).includes(session?.user?.email ?? '')) &&
+          Object.keys(tags).length >= 2 && <TagComparison tags={tags} />}
       </Flex>
     </Box>
   )

@@ -1,10 +1,21 @@
-import { Box, Grid, GridItem, Heading } from '@chakra-ui/react'
+import { DownloadIcon } from '@chakra-ui/icons'
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  Spacer,
+} from '@chakra-ui/react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
+import KappaButton from 'src/components/common/KappaButton'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import PercentageFloatingCard from 'src/components/rooms/PercentageFloatingCard'
 import { IRoom } from 'src/types/room.type'
+import { downloadSessionData } from 'src/utils/downloadSessionData'
 
 const Session = () => {
   const router = useRouter()
@@ -31,7 +42,22 @@ const Session = () => {
 
   return (
     <Box padding="3rem">
-      <Heading>Session: {sessionName}</Heading>
+      <HStack>
+        <Heading>Session: {sessionName}</Heading>
+        {typeof sessionName === 'string' && (
+          <>
+            <Spacer />
+            <KappaButton sessionName={sessionName} buttonSize="md" />
+            <Button
+              variant="outline"
+              rightIcon={<DownloadIcon />}
+              onClick={(event) => downloadSessionData(event, sessionName)}
+            >
+              Download
+            </Button>
+          </>
+        )}
+      </HStack>
 
       <Grid
         mt="3rem"

@@ -14,6 +14,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import FloatingCard from 'src/components/common/FloatingCard'
+import KappaButton from 'src/components/common/KappaButton'
 import LoadingSpinner from 'src/components/common/LoadingSpinner'
 import SessionModal from 'src/components/sessions/SessionModal'
 import { downloadSessionData } from 'src/utils/downloadSessionData'
@@ -71,14 +72,18 @@ const SessionList: FC = (props) => {
               {session.name}
             </Text>
 
-            <Button
-              size="xs"
-              variant="outline"
-              rightIcon={<DownloadIcon />}
-              onClick={(event) => downloadSessionData(event, session.name)}
-            >
-              Download
-            </Button>
+            <HStack>
+              <KappaButton sessionName={session.name} buttonSize="xs" />
+              <Spacer />
+              <Button
+                size="xs"
+                variant="outline"
+                rightIcon={<DownloadIcon />}
+                onClick={(event) => downloadSessionData(event, session.name)}
+              >
+                Download
+              </Button>
+            </HStack>
           </FloatingCard>
         ))}
       </SimpleGrid>
