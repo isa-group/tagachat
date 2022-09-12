@@ -1,7 +1,5 @@
 # tag-a-chat
 
-Tag managing app for chats
-
 ## Getting Started
 
 First, install the dependencies:
