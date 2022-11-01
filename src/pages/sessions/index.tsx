@@ -2,6 +2,7 @@ import { DownloadIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
+  ButtonGroup,
   Heading,
   HStack,
   SimpleGrid,
@@ -75,14 +76,25 @@ const SessionList: FC = (props) => {
             <HStack>
               <KappaButton sessionName={session.name} buttonSize="xs" />
               <Spacer />
-              <Button
-                size="xs"
-                variant="outline"
-                rightIcon={<DownloadIcon />}
-                onClick={(event) => downloadSessionData(event, session.name)}
-              >
-                Download
-              </Button>
+              <ButtonGroup variant="outline" isAttached>
+                <Button
+                  size="xs"
+                  variant="outline"
+                  onClick={(event) => downloadSessionData(event, session.name)}
+                >
+                  Download
+                </Button>
+                <Button
+                  size="xs"
+                  variant="outline"
+                  leftIcon={<DownloadIcon />}
+                  onClick={(event) =>
+                    downloadSessionData(event, session.name, true)
+                  }
+                >
+                  Utterances
+                </Button>
+              </ButtonGroup>
             </HStack>
           </FloatingCard>
         ))}
