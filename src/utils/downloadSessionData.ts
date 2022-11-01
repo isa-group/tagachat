@@ -232,9 +232,9 @@ function getSessionMessages(rooms: IRoom[]) {
               tagFI,
               tagDT,
               reviewer,
-            ]
+            ].join(',')
           })
-          .join(',')
+          .join('\n')
       })
 
     return messagesByRoom.join('\n')
