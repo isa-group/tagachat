@@ -205,6 +205,7 @@ function getSessionMessages(rooms: IRoom[]) {
       'room',
       'participant',
       'time',
+      'utterance-id',
       'utterance',
       'f-tag',
       'r-tag',
@@ -217,7 +218,7 @@ function getSessionMessages(rooms: IRoom[]) {
     const messagesByRoom = messages
       .filter((message) => message.tags)
       .map((message) => {
-        const { createdBy, message: utterance, block, tags } = message
+        const { id, createdBy, message: utterance, block, tags } = message
 
         return Object.entries(tags)
           .map((tagsByReviewer) => {
@@ -228,6 +229,7 @@ function getSessionMessages(rooms: IRoom[]) {
               roomCode,
               createdBy,
               block,
+              id,
               utterance,
               tagFI,
               tagDT,
