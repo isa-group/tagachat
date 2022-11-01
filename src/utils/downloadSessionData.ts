@@ -198,9 +198,56 @@ function convertData(rooms: IRoom[]) {
   return csv
 }
 
+function getSessionMessages(rooms: IRoom[]) {
+  const headers =
+    [
+      'session',
+      'room',
+      'participant',
+      'time',
+      'utterance',
+      'f-tag',
+      'r-tag',
+      'reviewer',
+    ].join(',') + '\n'
+
+  const totalMessages = rooms.map((room) => {
+    const { sessionName, roomCode, messages } = room
+
+    const messagesByRoom = messages
+      .filter((message) => message.tags)
+      .map((message) => {
+        const { createdBy, message: utterance, block, tags } = message
+
+        return Object.entries(tags)
+          .map((tagsByReviewer) => {
+            const [reviewer, { tagFI, tagDT }] = tagsByReviewer
+
+            return [
+              sessionName,
+              roomCode,
+              createdBy,
+              block,
+              utterance,
+              tagFI,
+              tagDT,
+              reviewer,
+            ]
+          })
+          .join(',')
+      })
+
+    return messagesByRoom.join('\n')
+  })
+
+  const csv = headers + totalMessages.join('\n')
+  return csv
+}
+
 export async function downloadSessionData(
   e: React.MouseEvent<HTMLButtonElement>,
-  sessionName: string
+  sessionName: string,
+  withMessages: boolean = false
 ) {
   e.stopPropagation()
 
@@ -209,7 +256,7 @@ export async function downloadSessionData(
       data: { data },
     } = await axios.get(`/api/sessions/${sessionName}/rooms`)
 
-    const csv = convertData(data)
+    const csv = withMessages ? getSessionMessages(data) : convertData(data)
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
