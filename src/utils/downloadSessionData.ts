@@ -216,7 +216,7 @@ function getSessionMessages(rooms: IRoom[]) {
     const { sessionName, roomCode, messages } = room
 
     const messagesByRoom = messages
-      .filter((message) => message.tags)
+      .filter((message) => message.tags && Object.keys(message.tags).length > 0)
       .map((message) => {
         const { id, createdBy, message: utterance, block, tags } = message
 
