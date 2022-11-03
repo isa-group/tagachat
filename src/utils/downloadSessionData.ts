@@ -230,7 +230,9 @@ function getSessionMessages(rooms: IRoom[]) {
               createdBy,
               block,
               id,
-              "'" + utterance.replace(/(\r\n|\n|\r)/gm, '') + "'",
+              '"' +
+                utterance.replace(/(\r\n|\n|\r)/gm, '').replaceAll('"', "'") +
+                '"',
               tagFI,
               tagDT,
               reviewer,
