@@ -54,7 +54,7 @@ const RadioCard = ({ tag,predicted, ...radioProps }: RadioCardProps) => {
       bg={color()}
 
       _after={
-        color() !== "white" && predicted !== true && (
+        color() !== "white" && predicted && (
           {
             content: `"${predicted *100}%"`,
             display: 'block',
