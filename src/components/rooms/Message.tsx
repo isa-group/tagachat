@@ -6,6 +6,7 @@ import {
   Text,
   useRadioGroup,
   useToast,
+  Spinner
 } from '@chakra-ui/react'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
@@ -42,6 +43,9 @@ const Message = ({
   const [tempFI, setTempFI] = useState<tagsFI>()
   const [tempDT, setTempDT] = useState<tagsDT>()
 
+  const [predictedTag, setPredictedTag] = useState()
+  const [predictedFormal, setPredictedFormal] = useState<boolean>()
+  
   const { data: session } = useSession()
 
   const { getRootProps: getRootFIProps, getRadioProps: getRadioFIProps } =
@@ -57,6 +61,70 @@ const Message = ({
       defaultValue: message?.tags?.[userEmail]?.tagDT,
       onChange: (tag) => setTempDT(tag),
     })
+
+    async function getAI(prompt: string) {
+      //parse prompt to [{"role": "user", "content": prompt}],
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+      return response.json();
+  }
+
+  useEffect(() => {
+    getAI(message.message).then((response) => {
+      
+      //El mensaje devuelto por la IA es de la forma "Clasificación: formal, S"
+      //Se debe parsear para obtener la clasificación y el protocolo
+      
+      response = response.choices[0].message.content.split(",")
+      if(response[0].includes("informal")){
+        setPredictedFormal(false)
+        console.log(response[0])
+      }else{
+        setPredictedFormal(true)
+        console.log(response[0])
+      }
+      //"Clasificación: formal, {'S': 0, 'U': 0, 'D': 0, 'SU': 0, 'ACK': 0, 'M': 0, 'QYN': 0, 'AYN': 0, 'QWH': 0, 'AWH': 0, 'FP': 0.99, 'FNON': 0, 'O': 0}"
+      //It is splitted by ","
+      //The first part is the classification
+      //The second part is the dictionary
+      //The dictionary is splitted by ":"
+      //The first part is the key
+      //The second part is the value
+      //The value is splitted by ","
+      //The first part is the value of the key
+      //The second part is the value of the key
+      
+      //get the length response to know how many keys are
+      //get the key and the value of the key
+      response[1] = response[1].replace("{", "")
+      response = response.map((value) => value.trim())
+      let dict = {}
+      for (let i = 1; i < response.length; i++) {
+        if(response[i].includes("}")){
+          response[i] = response[i].replace("}", "")
+        }
+        response[i] = response[i].replace("'", "")
+        response[i] = response[i].replace("'", "")
+        response[i] = response[i].split(":")
+        response[i][1] = parseFloat(response[i][1])
+
+        dict[response[i][0]] = response[i][1]
+
+        console.log(response[i])
+      }
+
+
+        setPredictedTag(dict ? dict : "No se pudo predecir")
+      
+
+      
+    });
+  }, [])
 
   useEffect(() => {
     if (!(tempFI && tempDT)) return
@@ -135,6 +203,11 @@ const Message = ({
         align="center"
         gap="15px"
       >
+        {
+          !predictedFormal && !predictedTag && (
+            <Spinner size="sm" color='green.500' />
+          )
+        }
         <Text>{message.message}</Text>
 
         <Spacer />
@@ -146,22 +219,71 @@ const Message = ({
         {session?.user.role === UserRoles.REVIEWER && (
           <>
             <ButtonGroup isAttached {...getRootFIProps()}>
+              {
+                console.log(predictedFormal)
+              }
               {tagFIOptions.map((value) => (
-                <RadioCard
-                  key={value}
-                  tag={value}
-                  {...getRadioFIProps({ value })}
-                />
+                  predictedFormal && value == 'F' ? (
+                    <RadioCard
+                      key={value}
+                      tag={value}
+                      predicted={true}
+                      {...getRadioFIProps({ value })}
+                    />
+                  ) :        
+                  (
+                    !predictedFormal && value == 'I' ? (
+                      <RadioCard
+                        key={value}
+                        tag={value}
+                        predicted={true}
+                        {...getRadioFIProps({ value })}
+                      />
+                    ) : (
+                      <RadioCard
+                        key={value}
+                        tag={value}
+                        predicted={false}
+                        {...getRadioFIProps({ value })}
+                      />
+                    )
+                  )
+              
               ))}
             </ButtonGroup>
 
             <ButtonGroup isAttached {...getRootDTProps()}>
-              {tagDTOptions.map((value) => (
-                <RadioCard
-                  key={value}
-                  tag={value}
-                  {...getRadioDTProps({ value })}
-                />
+
+              {predictedTag && tagDTOptions.map((value) => (
+                predictedTag ? (
+                  <RadioCard
+                    key={value}
+                    tag={value}
+                    predicted={predictedTag[value]}
+                    {...getRadioDTProps({ value })}
+                  />
+                ) : (
+                  <RadioCard
+                    key={value}
+                    tag={value}
+                    predicted={0}
+                    {...getRadioDTProps({ value })}
+                  />
+                )
+                
+
+              ))}
+                {!predictedTag && tagDTOptions.map((value) => (
+
+                  <RadioCard
+                    key={value}
+                    tag={value}
+                    predicted={false}
+                    {...getRadioDTProps({ value })}
+                  />
+                
+                
+
               ))}
             </ButtonGroup>
           </>
