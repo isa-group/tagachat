@@ -43,7 +43,7 @@ const Message = ({
   const [tempFI, setTempFI] = useState<tagsFI>()
   const [tempDT, setTempDT] = useState<tagsDT>()
 
-  const [predictedTag, setPredictedTag] = useState()
+  const [predictedTag, setPredictedTag] = useState<{[key: string]: number}>()
   const [predictedFormal, setPredictedFormal] = useState<boolean>()
   
   const { data: session } = useSession()
@@ -102,8 +102,8 @@ const Message = ({
       //get the length response to know how many keys are
       //get the key and the value of the key
       response[1] = response[1].replace("{", "")
-      response = response.map((value) => value.trim())
-      let dict = {}
+      response = response.map((value: string) => value.trim())
+      const dict: {[key: string]: number} = {}
       for (let i = 1; i < response.length; i++) {
         if(response[i].includes("}")){
           response[i] = response[i].replace("}", "")
@@ -119,7 +119,7 @@ const Message = ({
       }
 
 
-        setPredictedTag(dict ? dict : "No se pudo predecir")
+        setPredictedTag(dict);
       
 
       
@@ -232,7 +232,7 @@ const Message = ({
                     />
                   ) :        
                   (
-                    !predictedFormal && value == 'I' ? (
+                    !predictedFormal && value as string == 'I' ? (
                       <RadioCard
                         key={value}
                         tag={value}

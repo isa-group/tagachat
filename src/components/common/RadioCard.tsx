@@ -11,7 +11,7 @@ const RadioCard = ({ tag,predicted, ...radioProps }: RadioCardProps) => {
 
   const input = getInputProps()
   const checkbox = getCheckboxProps()
-
+  const predictedValue = predicted === true ? 100 : predicted === false ? 0 : predicted * 100;
   //Calculate the color of the button based on the tag
   const color = () => {
     let base = 300;
@@ -53,24 +53,6 @@ const RadioCard = ({ tag,predicted, ...radioProps }: RadioCardProps) => {
       
       bg={color()}
 
-      _after={
-        color() !== "white" && predicted && (
-          {
-            content: `"${predicted *100}%"`,
-            display: 'block',
-            position: 'absolute',
-            width: 'auto',
-            height: 'auto',
-            borderRadius: 'md',
-            fontSize: 'xs',
-            bg: 'yellow.200',
-            top: '-12px',
-            right: '0px',
-            padding: '1px 3px',
-            color: 'black',
-          }
-        )
-      }
       
       _checked={{
         bg: brandColors,
@@ -78,6 +60,11 @@ const RadioCard = ({ tag,predicted, ...radioProps }: RadioCardProps) => {
       }}
     >
       {tag}
+      {
+        color() !== "white" && predicted && (
+          <div style={{display: "block", width: 'auto', height:'auto', position:'absolute', top: '-12px', background:'#FAF089', color:'black', borderRadius: 5, padding: '2px 3px', fontSize: 12}}>{predictedValue}%</div>
+        )
+      }
       <input {...input} />
     </Button>
   )
