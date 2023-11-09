@@ -1,7 +1,7 @@
 import { Button, useColorModeValue, useRadio } from '@chakra-ui/react'
 type RadioCardProps = {
   tag: string,
-  predicted: boolean,
+  predicted: number | boolean,
 }
 
 const RadioCard = ({ tag,predicted, ...radioProps }: RadioCardProps) => {
