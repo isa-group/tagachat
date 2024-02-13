@@ -6,17 +6,21 @@ async function getPrediction(req: NextApiRequest, res: NextApiResponse){
     
     //Fetch data from OpenAI API fine-tuned model
     let parsed_prompt = [
-        {"role": "system", "content": "Esto es una convesaci\u00f3n entre usuarios de un chat, tu objetivo es saber si es S  U  D  SU  ACK  M  QYN  AYN  QWH  AWH  FP  FNON  O, tambi\u00e9n si es formal o informal. \u00danicamente devolver\u00e1s la clasificaci\u00f3n del mensaje sin explicar el por qu\u00e9. un ejemplo de mensaje devuelto es: la probabilidad de que sea formal y la probabilidad de que sea alguno de S	U	D	SU	ACK	M	QYN	AYN	QWH	AWH	FP	FNON	O . Obligatoriamente ninguno puede ser 1, todos tienen que partir desded 0.01, En caso de no saber la clasificaci\u00f3n, intentas adivinarlo."},
+        {"role": "system", "content": "Valid JSON indicating if the message is S  U  D  SU  ACK  M  QYN  AYN  QWH  AWH  FP  FNON  O, formal or informal"},
+        {
+            "role": "assistant",
+            "content": "{\"S\": 50,\"U\": 50,\"D\": 0,\"SU\": 0,\"ACK\": 0,\"M\": 0,\"QYN\": 0,\"AYN\": 0,\"QWH\": 0,\"AWH\": 0,\"FP\": 0,\"FNON\": 0,\"O\": 0, \"formal\": false, \"informal\": true}"
+        },
         {
           "role": "user",
           "content": req.body.prompt
         }
       ]
-
+      return res.status(200).json(true)
     const response = await axios.post('https://api.openai.com/v1/chat/completions', {
         "messages": parsed_prompt,
-        "model": "ft:gpt-3.5-turbo-0613:personal::8Du3hP16",
-        "temperature": 0.9,
+        "model": "ft:gpt-3.5-turbo-1106:personal::8OOlkVua",
+        "response_format": {type: "json_object"},
     }, {
         headers: {
             'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,

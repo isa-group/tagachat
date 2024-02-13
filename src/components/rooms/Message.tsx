@@ -62,69 +62,69 @@ const Message = ({
       onChange: (tag) => setTempDT(tag),
     })
 
-    async function getAI(prompt: string) {
-      //parse prompt to [{"role": "user", "content": prompt}],
-      const response = await fetch("/api/ai", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      });
-      return response.json();
-  }
+  //   async function getAI(prompt: string) {
+  //     //parse prompt to [{"role": "user", "content": prompt}],
+  //     const response = await fetch("/api/ai", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ prompt }),
+  //     });
+  //     return response.json();
+  // }
 
-  useEffect(() => {
-    getAI(message.message).then((response) => {
+  // useEffect(() => {
+  //   getAI(message.message).then((response) => {
       
-      //El mensaje devuelto por la IA es de la forma "Clasificación: formal, S"
-      //Se debe parsear para obtener la clasificación y el protocolo
+  //     //El mensaje devuelto por la IA es de la forma "Clasificación: formal, S"
+  //     //Se debe parsear para obtener la clasificación y el protocolo
       
-      response = response.choices[0].message.content.split(",")
-      if(response[0].includes("informal")){
-        setPredictedFormal(false)
-        console.log(response[0])
-      }else{
-        setPredictedFormal(true)
-        console.log(response[0])
-      }
-      //"Clasificación: formal, {'S': 0, 'U': 0, 'D': 0, 'SU': 0, 'ACK': 0, 'M': 0, 'QYN': 0, 'AYN': 0, 'QWH': 0, 'AWH': 0, 'FP': 0.99, 'FNON': 0, 'O': 0}"
-      //It is splitted by ","
-      //The first part is the classification
-      //The second part is the dictionary
-      //The dictionary is splitted by ":"
-      //The first part is the key
-      //The second part is the value
-      //The value is splitted by ","
-      //The first part is the value of the key
-      //The second part is the value of the key
+  //     response = response.choices[0].message.content.split(",")
+  //     if(response[0].includes("informal")){
+  //       setPredictedFormal(false)
+  //       console.log(response[0])
+  //     }else{
+  //       setPredictedFormal(true)
+  //       console.log(response[0])
+  //     }
+  //     //"Clasificación: formal, {'S': 0, 'U': 0, 'D': 0, 'SU': 0, 'ACK': 0, 'M': 0, 'QYN': 0, 'AYN': 0, 'QWH': 0, 'AWH': 0, 'FP': 0.99, 'FNON': 0, 'O': 0}"
+  //     //It is splitted by ","
+  //     //The first part is the classification
+  //     //The second part is the dictionary
+  //     //The dictionary is splitted by ":"
+  //     //The first part is the key
+  //     //The second part is the value
+  //     //The value is splitted by ","
+  //     //The first part is the value of the key
+  //     //The second part is the value of the key
       
-      //get the length response to know how many keys are
-      //get the key and the value of the key
-      response[1] = response[1].replace("{", "")
-      response = response.map((value: string) => value.trim())
-      const dict: {[key: string]: number} = {}
-      for (let i = 1; i < response.length; i++) {
-        if(response[i].includes("}")){
-          response[i] = response[i].replace("}", "")
-        }
-        response[i] = response[i].replace("'", "")
-        response[i] = response[i].replace("'", "")
-        response[i] = response[i].split(":")
-        response[i][1] = parseFloat(response[i][1])
+  //     //get the length response to know how many keys are
+  //     //get the key and the value of the key
+  //     response[1] = response[1].replace("{", "")
+  //     response = response.map((value: string) => value.trim())
+  //     const dict: {[key: string]: number} = {}
+  //     for (let i = 1; i < response.length; i++) {
+  //       if(response[i].includes("}")){
+  //         response[i] = response[i].replace("}", "")
+  //       }
+  //       response[i] = response[i].replace("'", "")
+  //       response[i] = response[i].replace("'", "")
+  //       response[i] = response[i].split(":")
+  //       response[i][1] = parseFloat(response[i][1])
 
-        dict[response[i][0]] = response[i][1]
+  //       dict[response[i][0]] = response[i][1]
 
-        console.log(response[i])
-      }
+  //       console.log(response[i])
+  //     }
 
 
-        setPredictedTag(dict);
+  //       setPredictedTag(dict);
       
 
       
-    });
-  }, [])
+  //   });
+  // }, [])
 
   useEffect(() => {
     if (!(tempFI && tempDT)) return
@@ -203,11 +203,11 @@ const Message = ({
         align="center"
         gap="15px"
       >
-        {
+        {/* {
           !predictedFormal && !predictedTag && (
             <Spinner size="sm" color='green.500' />
           )
-        }
+        } */}
         <Text>{message.message}</Text>
 
         <Spacer />

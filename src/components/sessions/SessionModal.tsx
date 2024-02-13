@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import {
   Button,
   FormControl,
@@ -11,11 +12,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Stack,
   useToast,
 } from '@chakra-ui/react'
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { getErrorMessage } from 'src/utils/getErrorMessage'
 import getTwincodeData from 'src/utils/getTwincodeData'
@@ -41,69 +43,38 @@ const SessionModal = ({
   } = useForm<FieldValues>()
   const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
+  const [sessions, setSessions] = useState([String])
+  //onload get sessions
+  const [session, setSession] = useState('')
+  const [type, setType] = useState('')
 
-  const onSubmit: SubmitHandler<FieldValues> = async ({
-    url,
-    sessionName,
-    username,
-    password,
-  }) => {
-    try {
-      setIsLoading(true)
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await axios.get('/api/fetch')
 
-      const {
-        data: { data: sessions },
-      } = await axios.get('/api/sessions')
-
-      if (
-        url ===
-        'https://twincode-data.herokuapp.com/api/v1/datasets/standard/TWINCODE_SESSION/full'
-      ) {
-        toast({
-          title: 'Warning',
-          description:
-            'Please replace TWINCODE_SESSION with the name of the session',
-          status: 'warning',
-          duration: 5000,
-          position: 'top-right',
-          isClosable: true,
-        })
-        return
+        setSessions(response.data.data)
+      } catch (error) {
       }
+    }
 
-      if (
-        sessions.find((session: { name: any }) => session.name === sessionName)
-      ) {
-        toast({
-          title: 'Warning',
-          description: `Session ${sessionName} was already added`,
-          status: 'warning',
-          duration: 5000,
-          position: 'top-right',
-          isClosable: true,
-        })
-        return
-      }
+    fetchSessions()
+  }
+  , [])  
 
-      const { data } = await axios.get(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization:
-            'Basic ' +
-            Buffer.from(username + ':' + password, 'utf8').toString('base64'),
-        },
-      })
-
-      const twincodeData = getTwincodeData(data, sessionName)
-
-      await axios.post(`/api/sessions`, {
+  
+  const onSubmit: SubmitHandler<FieldValues> = async (args) => {
+    setIsLoading(true)
+    axios.get(`/api/sessionData/${session}`)
+    .then(function (response) {
+      const data = response.data
+      const twincodeData = getTwincodeData(data, session)
+      console.log(twincodeData)
+      axios.post(`/api/sessions`, {
         name: twincodeData.sessionName,
       })
-
-      await axios.post(`/api/rooms`, twincodeData.data)
-
+      axios.post(`/api/rooms`, twincodeData.data)
       setUpdateSessions(true)
-
       toast({
         title: 'Success',
         description: 'Session loaded successfully',
@@ -112,22 +83,26 @@ const SessionModal = ({
         position: 'top-right',
         isClosable: true,
       })
-
       reset()
       onClose()
-    } catch (error) {
+      setIsLoading(false)
+      
+    })
+    .catch(function (error) {
       toast({
         title: 'Error',
-        description: getErrorMessage(error),
+        description: error.response.data.message,
         status: 'error',
         duration: 6000,
         position: 'top-right',
         isClosable: true,
       })
-    } finally {
       setIsLoading(false)
-    }
+    })
+
   }
+
+
 
   return (
     <>
@@ -139,6 +114,40 @@ const SessionModal = ({
           <ModalHeader>Import a session</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+          <form id="sessionform" onSubmit={handleSubmit(onSubmit)}>
+            <FormControl id="session" isInvalid={!!errors.url}>
+          <FormLabel>Session</FormLabel>
+            <Select placeholder="Select a session" size="lg" mb={6}
+              onChange={(e) => {
+                setSession(e.target.value)
+              }}
+            >
+              {sessions.map((session: any) => (
+                <option key={session} value={session}>
+                  {session}
+                </option>
+              ))}
+            </Select>
+            
+            <FormErrorMessage>{errors.url?.message}</FormErrorMessage>
+          </FormControl>
+          <FormControl id="type">
+            <FormLabel>Type of session</FormLabel>
+            <Select placeholder="Select a type of session" size="lg" mb={6}
+              onChange={(e) => {
+                setType(e.target.value)
+              }}
+            >
+              <option value="standard">Standard</option>
+            </Select>
+          </FormControl>
+          <div style={{display: "block", width: 'auto', height:'auto', position:'absolute', top: '-12px', background:'#FAF089', color:'black', borderRadius: 5, padding: '2px 3px', fontSize: 12}}>
+            At the day of today the only type of session available is standard, but we are working on adding custom sessions.
+            </div>
+          </form>
+
+
+          {/*
             <form id="sessionform" onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={6}>
                 <FormControl id="url" isInvalid={!!errors.url}>
@@ -197,6 +206,8 @@ const SessionModal = ({
                 />
               </Stack>
             </form>
+            */
+          }
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
