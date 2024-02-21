@@ -3,6 +3,7 @@ import { getErrorMessage } from 'src/utils/getErrorMessage'
 import axios from 'axios'
 async function fetchSessions(req: NextApiRequest, res: NextApiResponse) {
     //axios get to https://twincode.herokuapp.com/sessions
+    console.log(req)
     try {
         const response = await axios.get( process.env.TWINCODE_URL +'/sessions', {
             headers: {
