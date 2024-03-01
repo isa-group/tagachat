@@ -52,7 +52,7 @@ const completeTags = tagDTOptions.reduce((acc, tag) => {
   return acc
 }, tagsFI)
 
-function convertData(rooms: IRoom[]) {
+export function convertData(rooms: IRoom[]) {
   const taggedMessages: string[] = []
 
   rooms.forEach((room: IRoom) => {
@@ -246,6 +246,23 @@ function getSessionMessages(rooms: IRoom[]) {
 
   const csv = headers + totalMessages.join('\n')
   return csv
+}
+
+export async function streamSessionData(
+  sessionName: string,
+  withMessages: boolean = false
+) {
+  try {
+    const {
+      data: { data },
+    } = await axios.get(`/api/sessions/${sessionName}/rooms`)
+
+    const csv = withMessages ? getSessionMessages(data) : convertData(data)
+    const blob = new Blob([csv], { type: 'text/csv' })
+    return window.URL.createObjectURL(blob)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function downloadSessionData(
