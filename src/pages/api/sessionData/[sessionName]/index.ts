@@ -11,6 +11,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       success: false,
     })
   }
+  if (!session) {
+    return res.status(401).json({
+      message: 'Unauthorized',
+      success: false,
+    })
+  }
   if (session.user.role !== UserRoles.ADMIN) {
     return res.status(403).json({
       message: 'Forbidden',
