@@ -62,7 +62,7 @@ const RadioCard = ({ tag,predicted, ...radioProps }: RadioCardProps) => {
       {tag}
       {
         color() !== "white" && predicted && (
-          <div style={{display: "block", width: 'auto', height:'auto', position:'absolute', top: '-12px', background:'#FAF089', color:'black', borderRadius: 5, padding: '2px 3px', fontSize: 12}}>{predictedValue}%</div>
+          <div style={{display: "block", width: 'auto', height:'auto', position:'absolute', top: '-12px', background:'#FAF089', color:'black', borderRadius: 5, padding: '2px 3px', fontSize: 12}}>{predictedValue/100}%</div>
         )
       }
       <input {...input} />

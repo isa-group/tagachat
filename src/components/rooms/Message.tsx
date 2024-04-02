@@ -26,6 +26,7 @@ type MessageProps = {
   message: IMessage
   userEmail: string
   setTaggedMessages: Dispatch<SetStateAction<IMessage[]>>
+  prediction: any
 }
 
 const Message = ({
@@ -35,6 +36,7 @@ const Message = ({
   userEmail,
   message,
   setTaggedMessages,
+  prediction,
 }: MessageProps) => {
   const toast = useToast()
 
@@ -43,7 +45,21 @@ const Message = ({
   const [tempFI, setTempFI] = useState<tagsFI>()
   const [tempDT, setTempDT] = useState<tagsDT>()
 
-  const [predictedTag, setPredictedTag] = useState<{[key: string]: number}>()
+  const [predictedTag, setPredictedTag] = useState<{[key: string]: number}>({
+    "S": 0,
+    "U": 0,
+    "D": 0,
+    "SU": 0,
+    "ACK": 0,
+    "M": 0,
+    "QYN": 0,
+    "AYN": 0,
+    "QWH": 0,
+    "AWH": 0,
+    "FP": 0,
+    "FNON": 0,
+    "O": 0
+  });
   const [predictedFormal, setPredictedFormal] = useState<boolean>()
   
   const { data: session } = useSession()
@@ -61,6 +77,39 @@ const Message = ({
       defaultValue: message?.tags?.[userEmail]?.tagDT,
       onChange: (tag) => setTempDT(tag),
     })
+
+    function isNumber(value : any) {
+      return typeof value === 'number' && !isNaN(value);
+  }
+  
+
+    useEffect(() => {
+      if(prediction){
+        const response = JSON.parse(JSON.stringify(prediction.prediction.choices[0].message.content));
+        if(isNumber(response.formal)){
+          if (response.formal > response.informal){
+            setPredictedFormal(true)
+          }
+          else{
+            setPredictedFormal(false)
+          }
+        }else {
+        if(response.formal){
+          setPredictedFormal(true)
+        }else{
+          setPredictedFormal(false)
+        }
+      }
+        const parsed_response = JSON.parse(response)
+        const dict: {[key: string]: number} = {}
+        for (let i = 0; i < Object.keys(parsed_response).length; i++) {
+          dict[Object.keys(parsed_response)[i]] = parsed_response[Object.keys(parsed_response)[i]]
+        }
+        setPredictedTag(dict)
+        
+      }
+    }
+    , [prediction])
 
   //   async function getAI(prompt: string) {
   //     //parse prompt to [{"role": "user", "content": prompt}],
@@ -219,9 +268,6 @@ const Message = ({
         {session?.user.role === UserRoles.REVIEWER && (
           <>
             <ButtonGroup isAttached {...getRootFIProps()}>
-              {
-                console.log(predictedFormal)
-              }
               {tagFIOptions.map((value) => (
                   predictedFormal && value == 'F' ? (
                     <RadioCard

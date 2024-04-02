@@ -1,4 +1,4 @@
-import { DownloadIcon } from '@chakra-ui/icons'
+import { DownloadIcon, StarIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -17,13 +17,19 @@ import PercentageFloatingCard from 'src/components/rooms/PercentageFloatingCard'
 import { IRoom } from 'src/types/room.type'
 import { downloadSessionData } from 'src/utils/downloadSessionData'
 
+
+type PredictedList = {
+  room: string,
+  block: string,
+}[]
+
 const Session = () => {
   const router = useRouter()
   const { sessionName } = router.query
 
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<IRoom[]>([])
-
+  const [predicted, setPredicted] = useState<PredictedList>()
   useEffect(() => {
     if (!router.isReady) return
 
@@ -35,11 +41,19 @@ const Session = () => {
       setIsLoading(false)
     }
 
+    const predictedRooms = async () => {
+      const {
+        data: { predicted },
+      } = await axios.get(`/api/ai/${sessionName}`)
+      setPredicted(predicted)
+    }
+
+
     getData()
+    predictedRooms()
   }, [router.isReady, sessionName])
 
   if (isLoading) return <LoadingSpinner loading={isLoading} />
-
   return (
     <Box padding="3rem">
       <HStack>
@@ -83,11 +97,15 @@ const Session = () => {
             </GridItem>
 
             <GridItem colSpan={3}>
-              <PercentageFloatingCard room={room} block={1} />
+              <PercentageFloatingCard room={room} block={1} predicted={
+                predicted?.some((p:any) => parseInt(p.room) === room.roomCode && p.block === '1') || false
+              } />
             </GridItem>
 
             <GridItem colSpan={3}>
-              <PercentageFloatingCard room={room} block={2} />
+              <PercentageFloatingCard room={room} block={2} predicted={
+                predicted?.some((p:any) => parseInt(p.room) === room.roomCode && p.block === '2') || false
+              } />
             </GridItem>
           </Fragment>
         ))}

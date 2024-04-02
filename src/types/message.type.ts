@@ -11,5 +11,10 @@ export type IMessage = {
       tagFI: tagsFI
       tagDT: tagsDT
     }
+  },
+  prediction: {
+    messageID: number
+    prediction: Object
+    date: string
   }
 }
