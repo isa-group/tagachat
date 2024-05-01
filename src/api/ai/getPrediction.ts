@@ -50,6 +50,14 @@ async function getPrediction(req: NextApiRequest, res: NextApiResponse){
                   "content": message.message
                 }
               ]
+              /**
+               * Room 101
+Block 1
+
+ID: 29615
+
+ID: 896761
+               */
               fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
