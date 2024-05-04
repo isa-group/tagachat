@@ -45,7 +45,7 @@ async function getSessionReviewers(req: NextApiRequest, res: NextApiResponse) {
         )
 
 
-        if (!nr) {
+        if (!nr || nr.length === 0) {
             return res.status(404).json({
                 message: 'No rooms found',
                 success: false,

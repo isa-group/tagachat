@@ -80,10 +80,21 @@ async function getSessionData(req: NextApiRequest, res: NextApiResponse) {
                 return parsedReviewers.includes(item.reviewer)
             }
             )
+            if (filteredJson.length === 0) {
+                return res.status(404).json({
+                    message: 'No rooms with the specified reviewers found',
+                    success: false,
+                })
+            }
             return res.status(200).json(filteredJson);
         }
 
-
+        if (json.length === 1 && json[0].session === '') {
+            return res.status(404).json({
+                message: 'No rooms found',
+                success: false,
+            })
+        }
         res.status(200).json(json);
 
 
