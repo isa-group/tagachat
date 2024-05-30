@@ -40,6 +40,7 @@ const headers =
     'fp_r',
     'fnon_r',
     'o_r',
+    'percent',
   ].join(',') + '\n'
 
 const tagsFI = tagFIOptions.reduce((acc, tag) => {
@@ -153,6 +154,7 @@ export function convertData(rooms: IRoom[]) {
           messagesByBlock.push(taggedMessage)
         })
 
+
         // getting sum of tags in each message
         const totalTagCount = new Map()
         messagesByBlock.forEach((message) => {
@@ -162,6 +164,8 @@ export function convertData(rooms: IRoom[]) {
             }
           })
         })
+
+        //Get the percentage of done by each participant in each block globally
 
         // adding relative frequency to each message
         messagesByBlock.forEach((message) => {
@@ -180,6 +184,23 @@ export function convertData(rooms: IRoom[]) {
             }
           })
         })
+
+        messagesByBlock.forEach((message) => {
+          
+            const taggedMessagesByReviewer = messages.filter((m) => m.tags && m.tags[message.get('reviewer')] && m.block === message.get('block'))
+
+            const filteredMessageTime = messages.filter((m) => m.block === message.get('block'))
+            
+            
+
+            message.set(
+            'percent',
+              parseFloat(((taggedMessagesByReviewer.length / filteredMessageTime.length ) * 100).toFixed(2))
+          )
+        })
+
+
+
 
         const finalMessage = messagesByBlock
           .map((message) => {
@@ -207,6 +228,7 @@ function getSessionMessages(rooms: IRoom[]) {
       'time',
       'utterance-id',
       'utterance',
+      'percent',
       'f-tag',
       'r-tag',
       'reviewer',
@@ -224,6 +246,32 @@ function getSessionMessages(rooms: IRoom[]) {
           .map((tagsByReviewer) => {
             const [reviewer, { tagFI, tagDT }] = tagsByReviewer
 
+
+            //calculate percent by messageCountPerBlockAndParticipant and totalmessage by room
+
+            const messageCountPerBlockAndParticipant = messages.reduce(
+              (acc, message: IMessage) => {
+                const { block, createdBy } = message
+                if (acc.has(block)) {
+                  if (acc.get(block).has(createdBy)) {
+                    acc.get(block).set(createdBy, acc.get(block).get(createdBy) + 1)
+                  } else {
+                    acc.get(block).set(createdBy, 1)
+                  }
+                } else {
+                  acc.set(block, new Map([[createdBy, 1]]))
+                }
+                return acc
+              },
+              new Map()
+            )
+
+            const totalMessages = messages.filter(
+              (message) => message.block === block
+            ).length
+
+            const percent = messageCountPerBlockAndParticipant.get(block).get(createdBy) / totalMessages
+
             return [
               sessionName,
               roomCode,
@@ -233,6 +281,7 @@ function getSessionMessages(rooms: IRoom[]) {
               '"' +
                 utterance.replace(/(\r\n|\n|\r)/gm, '').replaceAll('"', "'") +
                 '"',
+              percent,
               tagFI,
               tagDT,
               reviewer,
